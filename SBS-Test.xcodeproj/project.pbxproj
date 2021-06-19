@@ -7,6 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B7170F69267E759700D55F4C /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B7170F68267E759700D55F4C /* UserNotifications.framework */; };
+		B7170F6B267E759700D55F4C /* UserNotificationsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B7170F6A267E759700D55F4C /* UserNotificationsUI.framework */; };
+		B7170F6E267E759700D55F4C /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7170F6D267E759700D55F4C /* NotificationViewController.swift */; };
+		B7170F75267E759700D55F4C /* TestNotificationContent.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B7170F66267E759700D55F4C /* TestNotificationContent.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		B7170F85267E7E9300D55F4C /* UIView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7170F84267E7E9300D55F4C /* UIView+Extensions.swift */; };
+		B7170F87267E7EDB00D55F4C /* UIViewController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7170F86267E7EDB00D55F4C /* UIViewController+Extensions.swift */; };
+		B7170F89267E7F2400D55F4C /* ApplePayContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7170F88267E7F2400D55F4C /* ApplePayContent.swift */; };
+		B7170F8B267E7F3900D55F4C /* ApplePayError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7170F8A267E7F3900D55F4C /* ApplePayError.swift */; };
+		B7170F8D267E803000D55F4C /* ApplePayContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7170F8C267E803000D55F4C /* ApplePayContentViewModel.swift */; };
+		B7170F8F267E807200D55F4C /* Box.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7170F8E267E807200D55F4C /* Box.swift */; };
+		B7170F93267E810D00D55F4C /* ApplePayContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7170F91267E810D00D55F4C /* ApplePayContentView.swift */; };
+		B7170F94267E810D00D55F4C /* ApplePayContentView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B7170F92267E810D00D55F4C /* ApplePayContentView.xib */; };
+		B7170F98267E811900D55F4C /* ApplePayErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7170F96267E811900D55F4C /* ApplePayErrorView.swift */; };
+		B7170F99267E811900D55F4C /* ApplePayErrorView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B7170F97267E811900D55F4C /* ApplePayErrorView.xib */; };
+		B7170F9B267E816400D55F4C /* ApplePayCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7170F9A267E816400D55F4C /* ApplePayCoordinator.swift */; };
 		B77EC07526773F9200BC853B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77EC07426773F9200BC853B /* AppDelegate.swift */; };
 		B77EC07726773F9200BC853B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77EC07626773F9200BC853B /* SceneDelegate.swift */; };
 		B77EC07926773F9200BC853B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77EC07826773F9200BC853B /* ViewController.swift */; };
@@ -16,7 +31,48 @@
 		B77EC0B42677F53F00BC853B /* UIViewControllers+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77EC0B32677F53F00BC853B /* UIViewControllers+Extensions.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		B7170F73267E759700D55F4C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B77EC06926773F9200BC853B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B7170F65267E759700D55F4C;
+			remoteInfo = TestNotificationContent;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		B7170F76267E759700D55F4C /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				B7170F75267E759700D55F4C /* TestNotificationContent.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		B7170F66267E759700D55F4C /* TestNotificationContent.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TestNotificationContent.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		B7170F68267E759700D55F4C /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
+		B7170F6A267E759700D55F4C /* UserNotificationsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotificationsUI.framework; path = System/Library/Frameworks/UserNotificationsUI.framework; sourceTree = SDKROOT; };
+		B7170F6D267E759700D55F4C /* NotificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewController.swift; sourceTree = "<group>"; };
+		B7170F72267E759700D55F4C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B7170F7E267E7B4B00D55F4C /* SBS-Test.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "SBS-Test.entitlements"; sourceTree = "<group>"; };
+		B7170F84267E7E9300D55F4C /* UIView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extensions.swift"; sourceTree = "<group>"; };
+		B7170F86267E7EDB00D55F4C /* UIViewController+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extensions.swift"; sourceTree = "<group>"; };
+		B7170F88267E7F2400D55F4C /* ApplePayContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplePayContent.swift; sourceTree = "<group>"; };
+		B7170F8A267E7F3900D55F4C /* ApplePayError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplePayError.swift; sourceTree = "<group>"; };
+		B7170F8C267E803000D55F4C /* ApplePayContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplePayContentViewModel.swift; sourceTree = "<group>"; };
+		B7170F8E267E807200D55F4C /* Box.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Box.swift; sourceTree = "<group>"; };
+		B7170F91267E810D00D55F4C /* ApplePayContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApplePayContentView.swift; sourceTree = "<group>"; };
+		B7170F92267E810D00D55F4C /* ApplePayContentView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ApplePayContentView.xib; sourceTree = "<group>"; };
+		B7170F96267E811900D55F4C /* ApplePayErrorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApplePayErrorView.swift; sourceTree = "<group>"; };
+		B7170F97267E811900D55F4C /* ApplePayErrorView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ApplePayErrorView.xib; sourceTree = "<group>"; };
+		B7170F9A267E816400D55F4C /* ApplePayCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplePayCoordinator.swift; sourceTree = "<group>"; };
 		B77EC07126773F9200BC853B /* SBS-Test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SBS-Test.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B77EC07426773F9200BC853B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B77EC07626773F9200BC853B /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -29,6 +85,15 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		B7170F63267E759700D55F4C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B7170F6B267E759700D55F4C /* UserNotificationsUI.framework in Frameworks */,
+				B7170F69267E759700D55F4C /* UserNotifications.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B77EC06E26773F9200BC853B /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -39,10 +104,129 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B7170F67267E759700D55F4C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B7170F68267E759700D55F4C /* UserNotifications.framework */,
+				B7170F6A267E759700D55F4C /* UserNotificationsUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B7170F6C267E759700D55F4C /* TestNotificationContent */ = {
+			isa = PBXGroup;
+			children = (
+				B7170F7C267E780000D55F4C /* AppNotification */,
+				B7170F7A267E77C800D55F4C /* ApplePay */,
+				B7170F7B267E77D800D55F4C /* PromisePay */,
+				B7170F72267E759700D55F4C /* Info.plist */,
+			);
+			path = TestNotificationContent;
+			sourceTree = "<group>";
+		};
+		B7170F7A267E77C800D55F4C /* ApplePay */ = {
+			isa = PBXGroup;
+			children = (
+				B7170F82267E7E5500D55F4C /* Coordinator */,
+				B7170F81267E7E4D00D55F4C /* Models */,
+				B7170F80267E7E3900D55F4C /* Views */,
+				B7170F7F267E7E3100D55F4C /* ViewModels */,
+			);
+			path = ApplePay;
+			sourceTree = "<group>";
+		};
+		B7170F7B267E77D800D55F4C /* PromisePay */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = PromisePay;
+			sourceTree = "<group>";
+		};
+		B7170F7C267E780000D55F4C /* AppNotification */ = {
+			isa = PBXGroup;
+			children = (
+				B7170F83267E7E7600D55F4C /* Helpers */,
+				B7170F7D267E781300D55F4C /* Views */,
+			);
+			path = AppNotification;
+			sourceTree = "<group>";
+		};
+		B7170F7D267E781300D55F4C /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				B7170F6D267E759700D55F4C /* NotificationViewController.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		B7170F7F267E7E3100D55F4C /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				B7170F8C267E803000D55F4C /* ApplePayContentViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		B7170F80267E7E3900D55F4C /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				B7170F95267E811900D55F4C /* ApplePayErrorView */,
+				B7170F90267E810D00D55F4C /* ApplePayContentView */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		B7170F81267E7E4D00D55F4C /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				B7170F88267E7F2400D55F4C /* ApplePayContent.swift */,
+				B7170F8A267E7F3900D55F4C /* ApplePayError.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		B7170F82267E7E5500D55F4C /* Coordinator */ = {
+			isa = PBXGroup;
+			children = (
+				B7170F9A267E816400D55F4C /* ApplePayCoordinator.swift */,
+			);
+			path = Coordinator;
+			sourceTree = "<group>";
+		};
+		B7170F83267E7E7600D55F4C /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				B7170F84267E7E9300D55F4C /* UIView+Extensions.swift */,
+				B7170F86267E7EDB00D55F4C /* UIViewController+Extensions.swift */,
+				B7170F8E267E807200D55F4C /* Box.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		B7170F90267E810D00D55F4C /* ApplePayContentView */ = {
+			isa = PBXGroup;
+			children = (
+				B7170F91267E810D00D55F4C /* ApplePayContentView.swift */,
+				B7170F92267E810D00D55F4C /* ApplePayContentView.xib */,
+			);
+			path = ApplePayContentView;
+			sourceTree = "<group>";
+		};
+		B7170F95267E811900D55F4C /* ApplePayErrorView */ = {
+			isa = PBXGroup;
+			children = (
+				B7170F96267E811900D55F4C /* ApplePayErrorView.swift */,
+				B7170F97267E811900D55F4C /* ApplePayErrorView.xib */,
+			);
+			path = ApplePayErrorView;
+			sourceTree = "<group>";
+		};
 		B77EC06826773F9200BC853B = {
 			isa = PBXGroup;
 			children = (
 				B77EC07326773F9200BC853B /* SBS-Test */,
+				B7170F6C267E759700D55F4C /* TestNotificationContent */,
+				B7170F67267E759700D55F4C /* Frameworks */,
 				B77EC07226773F9200BC853B /* Products */,
 			);
 			sourceTree = "<group>";
@@ -51,6 +235,7 @@
 			isa = PBXGroup;
 			children = (
 				B77EC07126773F9200BC853B /* SBS-Test.app */,
+				B7170F66267E759700D55F4C /* TestNotificationContent.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -58,6 +243,7 @@
 		B77EC07326773F9200BC853B /* SBS-Test */ = {
 			isa = PBXGroup;
 			children = (
+				B7170F7E267E7B4B00D55F4C /* SBS-Test.entitlements */,
 				B77EC08826773FB200BC853B /* Applications */,
 				B77EC08C2677404F00BC853B /* Supporting files */,
 			);
@@ -113,6 +299,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		B7170F65267E759700D55F4C /* TestNotificationContent */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B7170F79267E759700D55F4C /* Build configuration list for PBXNativeTarget "TestNotificationContent" */;
+			buildPhases = (
+				B7170F62267E759700D55F4C /* Sources */,
+				B7170F63267E759700D55F4C /* Frameworks */,
+				B7170F64267E759700D55F4C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TestNotificationContent;
+			productName = TestNotificationContent;
+			productReference = B7170F66267E759700D55F4C /* TestNotificationContent.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		B77EC07026773F9200BC853B /* SBS-Test */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = B77EC08526773F9D00BC853B /* Build configuration list for PBXNativeTarget "SBS-Test" */;
@@ -120,10 +323,12 @@
 				B77EC06D26773F9200BC853B /* Sources */,
 				B77EC06E26773F9200BC853B /* Frameworks */,
 				B77EC06F26773F9200BC853B /* Resources */,
+				B7170F76267E759700D55F4C /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				B7170F74267E759700D55F4C /* PBXTargetDependency */,
 			);
 			name = "SBS-Test";
 			productName = "SBS-Test";
@@ -139,6 +344,9 @@
 				LastSwiftUpdateCheck = 1250;
 				LastUpgradeCheck = 1250;
 				TargetAttributes = {
+					B7170F65267E759700D55F4C = {
+						CreatedOnToolsVersion = 12.5;
+					};
 					B77EC07026773F9200BC853B = {
 						CreatedOnToolsVersion = 12.5;
 					};
@@ -158,11 +366,21 @@
 			projectRoot = "";
 			targets = (
 				B77EC07026773F9200BC853B /* SBS-Test */,
+				B7170F65267E759700D55F4C /* TestNotificationContent */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		B7170F64267E759700D55F4C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B7170F94267E810D00D55F4C /* ApplePayContentView.xib in Resources */,
+				B7170F99267E811900D55F4C /* ApplePayErrorView.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B77EC06F26773F9200BC853B /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -175,6 +393,23 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		B7170F62267E759700D55F4C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B7170F85267E7E9300D55F4C /* UIView+Extensions.swift in Sources */,
+				B7170F8F267E807200D55F4C /* Box.swift in Sources */,
+				B7170F9B267E816400D55F4C /* ApplePayCoordinator.swift in Sources */,
+				B7170F98267E811900D55F4C /* ApplePayErrorView.swift in Sources */,
+				B7170F8B267E7F3900D55F4C /* ApplePayError.swift in Sources */,
+				B7170F89267E7F2400D55F4C /* ApplePayContent.swift in Sources */,
+				B7170F87267E7EDB00D55F4C /* UIViewController+Extensions.swift in Sources */,
+				B7170F8D267E803000D55F4C /* ApplePayContentViewModel.swift in Sources */,
+				B7170F93267E810D00D55F4C /* ApplePayContentView.swift in Sources */,
+				B7170F6E267E759700D55F4C /* NotificationViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B77EC06D26773F9200BC853B /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -189,6 +424,14 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		B7170F74267E759700D55F4C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B7170F65267E759700D55F4C /* TestNotificationContent */;
+			targetProxy = B7170F73267E759700D55F4C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
 		B77EC07F26773F9D00BC853B /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
@@ -201,6 +444,46 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		B7170F77267E759700D55F4C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = L2899MX3L7;
+				INFOPLIST_FILE = TestNotificationContent/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.split8bit.SBS-Test.TestNotificationContent";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		B7170F78267E759700D55F4C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = L2899MX3L7;
+				INFOPLIST_FILE = TestNotificationContent/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.split8bit.SBS-Test.TestNotificationContent";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		B77EC08326773F9D00BC853B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -320,8 +603,10 @@
 		B77EC08626773F9D00BC853B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "SBS-Test/SBS-Test.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = L2899MX3L7;
 				INFOPLIST_FILE = "SBS-Test/Supporting files/Info.plist";
@@ -339,8 +624,10 @@
 		B77EC08726773F9D00BC853B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "SBS-Test/SBS-Test.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = L2899MX3L7;
 				INFOPLIST_FILE = "SBS-Test/Supporting files/Info.plist";
@@ -358,6 +645,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		B7170F79267E759700D55F4C /* Build configuration list for PBXNativeTarget "TestNotificationContent" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B7170F77267E759700D55F4C /* Debug */,
+				B7170F78267E759700D55F4C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		B77EC06C26773F9200BC853B /* Build configuration list for PBXProject "SBS-Test" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
