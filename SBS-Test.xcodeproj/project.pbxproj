@@ -22,6 +22,9 @@
 		B7170F98267E811900D55F4C /* ApplePayErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7170F96267E811900D55F4C /* ApplePayErrorView.swift */; };
 		B7170F99267E811900D55F4C /* ApplePayErrorView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B7170F97267E811900D55F4C /* ApplePayErrorView.xib */; };
 		B7170F9B267E816400D55F4C /* ApplePayCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7170F9A267E816400D55F4C /* ApplePayCoordinator.swift */; };
+		B7170F9E267E8E4100D55F4C /* BaseCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7170F9D267E8E4100D55F4C /* BaseCoordinator.swift */; };
+		B7170FA0267E905500D55F4C /* ApplePayErrorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7170F9F267E905500D55F4C /* ApplePayErrorViewModel.swift */; };
+		B7170FA2267E92C000D55F4C /* ApplePayErrorCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7170FA1267E92C000D55F4C /* ApplePayErrorCoordinator.swift */; };
 		B77EC07526773F9200BC853B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77EC07426773F9200BC853B /* AppDelegate.swift */; };
 		B77EC07726773F9200BC853B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77EC07626773F9200BC853B /* SceneDelegate.swift */; };
 		B77EC07926773F9200BC853B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77EC07826773F9200BC853B /* ViewController.swift */; };
@@ -73,6 +76,9 @@
 		B7170F96267E811900D55F4C /* ApplePayErrorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApplePayErrorView.swift; sourceTree = "<group>"; };
 		B7170F97267E811900D55F4C /* ApplePayErrorView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ApplePayErrorView.xib; sourceTree = "<group>"; };
 		B7170F9A267E816400D55F4C /* ApplePayCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplePayCoordinator.swift; sourceTree = "<group>"; };
+		B7170F9D267E8E4100D55F4C /* BaseCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseCoordinator.swift; sourceTree = "<group>"; };
+		B7170F9F267E905500D55F4C /* ApplePayErrorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplePayErrorViewModel.swift; sourceTree = "<group>"; };
+		B7170FA1267E92C000D55F4C /* ApplePayErrorCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplePayErrorCoordinator.swift; sourceTree = "<group>"; };
 		B77EC07126773F9200BC853B /* SBS-Test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SBS-Test.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B77EC07426773F9200BC853B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B77EC07626773F9200BC853B /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -147,6 +153,7 @@
 			children = (
 				B7170F83267E7E7600D55F4C /* Helpers */,
 				B7170F7D267E781300D55F4C /* Views */,
+				B7170F9D267E8E4100D55F4C /* BaseCoordinator.swift */,
 			);
 			path = AppNotification;
 			sourceTree = "<group>";
@@ -163,6 +170,7 @@
 			isa = PBXGroup;
 			children = (
 				B7170F8C267E803000D55F4C /* ApplePayContentViewModel.swift */,
+				B7170F9F267E905500D55F4C /* ApplePayErrorViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -189,6 +197,7 @@
 			isa = PBXGroup;
 			children = (
 				B7170F9A267E816400D55F4C /* ApplePayCoordinator.swift */,
+				B7170FA1267E92C000D55F4C /* ApplePayErrorCoordinator.swift */,
 			);
 			path = Coordinator;
 			sourceTree = "<group>";
@@ -400,12 +409,15 @@
 				B7170F85267E7E9300D55F4C /* UIView+Extensions.swift in Sources */,
 				B7170F8F267E807200D55F4C /* Box.swift in Sources */,
 				B7170F9B267E816400D55F4C /* ApplePayCoordinator.swift in Sources */,
+				B7170FA2267E92C000D55F4C /* ApplePayErrorCoordinator.swift in Sources */,
 				B7170F98267E811900D55F4C /* ApplePayErrorView.swift in Sources */,
 				B7170F8B267E7F3900D55F4C /* ApplePayError.swift in Sources */,
+				B7170FA0267E905500D55F4C /* ApplePayErrorViewModel.swift in Sources */,
 				B7170F89267E7F2400D55F4C /* ApplePayContent.swift in Sources */,
 				B7170F87267E7EDB00D55F4C /* UIViewController+Extensions.swift in Sources */,
 				B7170F8D267E803000D55F4C /* ApplePayContentViewModel.swift in Sources */,
 				B7170F93267E810D00D55F4C /* ApplePayContentView.swift in Sources */,
+				B7170F9E267E8E4100D55F4C /* BaseCoordinator.swift in Sources */,
 				B7170F6E267E759700D55F4C /* NotificationViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

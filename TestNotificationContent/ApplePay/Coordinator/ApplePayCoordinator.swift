@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ApplePayCoordinator {
+class ApplePayCoordinator: BaseCoordinator {
     
     private var viewController: UIViewController
     private var applePayContent: ApplePayContent
@@ -17,12 +17,26 @@ class ApplePayCoordinator {
         self.applePayContent = applePayContent
     }
     
-    func start(){
+    override func start(){
         let viewModel = ApplePayContentViewModel(model: applePayContent)
-        viewModel.payInCompletion = {print("Confirm view")}
+        viewModel.errorCompletion = { error in
+//            guard let self = self else {
+//                let childs = self.childCoordinators
+//                print("*** Self = \(self)")
+//                return}
+            self.showError(error, in: self.viewController)
+            
+        }
+        
         let view = ApplePayContentView.loadFromNib()
         view.viewModel = viewModel
         viewController.removePreviousViewsAndAdd(view: view)
+    }
+    
+    func showError(_ viewModel: ApplePayError, in controller: UIViewController){
+       let errorCoordinator = ApplePayErrorCoordinator(applePayError: viewModel, viewController: controller)
+        errorCoordinator.store(coordinator: errorCoordinator)
+        errorCoordinator.start()
     }
     
 }

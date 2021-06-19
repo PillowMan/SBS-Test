@@ -32,6 +32,6 @@ class ApplePayContentView: UIView {
 
 extension ApplePayContentView {
     @objc func confirmButtonTapped(){
-        viewModel?.payInCompletion?()
+        viewModel?.confirmApplePay()
     }
 }
