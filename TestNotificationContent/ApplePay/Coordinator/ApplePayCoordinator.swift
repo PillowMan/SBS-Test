@@ -19,12 +19,9 @@ class ApplePayCoordinator: BaseCoordinator {
     
     override func start(){
         let viewModel = ApplePayContentViewModel(model: applePayContent)
-        viewModel.errorCompletion = { error in
-//            guard let self = self else {
-//                let childs = self.childCoordinators
-//                print("*** Self = \(self)")
-//                return}
-            self.showError(error, in: self.viewController)
+        viewModel.errorCompletion = { [weak self] error in
+            guard let strongSelf = self else {return}
+            strongSelf.showError(error, in: strongSelf.viewController)
             
         }
         
@@ -35,8 +32,12 @@ class ApplePayCoordinator: BaseCoordinator {
     
     func showError(_ viewModel: ApplePayError, in controller: UIViewController){
        let errorCoordinator = ApplePayErrorCoordinator(applePayError: viewModel, viewController: controller)
-        errorCoordinator.store(coordinator: errorCoordinator)
+//        errorCoordinator.store(coordinator: errorCoordinator)
         errorCoordinator.start()
+    }
+    
+    deinit {
+        print("*** ApplePayCoordinator deinit")
     }
     
 }

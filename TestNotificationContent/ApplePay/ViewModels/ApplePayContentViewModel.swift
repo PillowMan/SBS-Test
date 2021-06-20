@@ -27,4 +27,8 @@ class ApplePayContentViewModel{
         errorCompletion?(error)
     }
     
+    deinit {
+        print("*** ApplePayContentViewModel deinit")
+    }
+    
 }

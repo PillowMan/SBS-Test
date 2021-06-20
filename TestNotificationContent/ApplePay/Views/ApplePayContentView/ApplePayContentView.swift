@@ -28,7 +28,12 @@ class ApplePayContentView: UIView {
         confirmButton.addTarget(self, action: #selector(confirmButtonTapped), for: .touchUpInside)
         
     }
+    
+    deinit {
+        print("*** ApplePayContentView deinit")
+    }
 }
+
 
 extension ApplePayContentView {
     @objc func confirmButtonTapped(){

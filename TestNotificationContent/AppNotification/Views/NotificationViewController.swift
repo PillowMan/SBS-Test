@@ -20,6 +20,7 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
         case "apple_pay_push":
             let applePayContent = ApplePayContent(title: "ApplePay", subTitle: "Some description", amounts: ["100", "200", "300"])
             let coordinator = ApplePayCoordinator(applePayContent: applePayContent, viewController: self)
+            coordinator.store(coordinator: coordinator)
             coordinator.start()
             break;
         case "promise_pay_push":
