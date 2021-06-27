@@ -14,6 +14,10 @@
 		B77EC08126773F9D00BC853B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B77EC07F26773F9D00BC853B /* LaunchScreen.storyboard */; };
 		B77EC0B22677F19F00BC853B /* Box.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77EC0B12677F19F00BC853B /* Box.swift */; };
 		B77EC0B42677F53F00BC853B /* UIViewControllers+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77EC0B32677F53F00BC853B /* UIViewControllers+Extensions.swift */; };
+		B79A1D5F267FC32300CB2214 /* ApplePayContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B79A1D5E267FC32300CB2214 /* ApplePayContent.swift */; };
+		B79A1D61267FC35400CB2214 /* ApplePayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B79A1D60267FC35400CB2214 /* ApplePayView.swift */; };
+		B79A1D63267FC3F200CB2214 /* ApplePayViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B79A1D62267FC3F200CB2214 /* ApplePayViewModel.swift */; };
+		B79A1D65267FC47100CB2214 /* ApplePayCoordinate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B79A1D64267FC47100CB2214 /* ApplePayCoordinate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +30,10 @@
 		B77EC08226773F9D00BC853B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B77EC0B12677F19F00BC853B /* Box.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Box.swift; sourceTree = "<group>"; };
 		B77EC0B32677F53F00BC853B /* UIViewControllers+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewControllers+Extensions.swift"; sourceTree = "<group>"; };
+		B79A1D5E267FC32300CB2214 /* ApplePayContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplePayContent.swift; sourceTree = "<group>"; };
+		B79A1D60267FC35400CB2214 /* ApplePayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplePayView.swift; sourceTree = "<group>"; };
+		B79A1D62267FC3F200CB2214 /* ApplePayViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplePayViewModel.swift; sourceTree = "<group>"; };
+		B79A1D64267FC47100CB2214 /* ApplePayCoordinate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplePayCoordinate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +67,7 @@
 			isa = PBXGroup;
 			children = (
 				B77EC08826773FB200BC853B /* Applications */,
+				B79A1D59267FC2C700CB2214 /* MainScreen */,
 				B77EC08C2677404F00BC853B /* Supporting files */,
 			);
 			path = "SBS-Test";
@@ -108,6 +117,49 @@
 				B77EC0B32677F53F00BC853B /* UIViewControllers+Extensions.swift */,
 			);
 			path = Helpers;
+			sourceTree = "<group>";
+		};
+		B79A1D59267FC2C700CB2214 /* MainScreen */ = {
+			isa = PBXGroup;
+			children = (
+				B79A1D5D267FC30B00CB2214 /* Models */,
+				B79A1D5C267FC2F400CB2214 /* Coordinate */,
+				B79A1D5B267FC2E100CB2214 /* Views */,
+				B79A1D5A267FC2D500CB2214 /* ViewModels */,
+			);
+			path = MainScreen;
+			sourceTree = "<group>";
+		};
+		B79A1D5A267FC2D500CB2214 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				B79A1D62267FC3F200CB2214 /* ApplePayViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		B79A1D5B267FC2E100CB2214 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				B79A1D60267FC35400CB2214 /* ApplePayView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		B79A1D5C267FC2F400CB2214 /* Coordinate */ = {
+			isa = PBXGroup;
+			children = (
+				B79A1D64267FC47100CB2214 /* ApplePayCoordinate.swift */,
+			);
+			path = Coordinate;
+			sourceTree = "<group>";
+		};
+		B79A1D5D267FC30B00CB2214 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				B79A1D5E267FC32300CB2214 /* ApplePayContent.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -181,9 +233,13 @@
 			files = (
 				B77EC07926773F9200BC853B /* ViewController.swift in Sources */,
 				B77EC0B42677F53F00BC853B /* UIViewControllers+Extensions.swift in Sources */,
+				B79A1D63267FC3F200CB2214 /* ApplePayViewModel.swift in Sources */,
 				B77EC07526773F9200BC853B /* AppDelegate.swift in Sources */,
+				B79A1D65267FC47100CB2214 /* ApplePayCoordinate.swift in Sources */,
 				B77EC0B22677F19F00BC853B /* Box.swift in Sources */,
 				B77EC07726773F9200BC853B /* SceneDelegate.swift in Sources */,
+				B79A1D61267FC35400CB2214 /* ApplePayView.swift in Sources */,
+				B79A1D5F267FC32300CB2214 /* ApplePayContent.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

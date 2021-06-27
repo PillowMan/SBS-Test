@@ -9,9 +9,13 @@ import UIKit
 
 class ViewController: UIViewController {
     
+    var coordinator: ApplePayCoordinate?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = .white
+        self.view.backgroundColor = .cyan
+        self.coordinator = ApplePayCoordinate(ApplePayContent(title: "ApplePay"), in: self)
+        coordinator?.start()
     }
     
 }
