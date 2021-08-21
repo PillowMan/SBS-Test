@@ -55,6 +55,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
           
           completionHandler([.alert, .sound])
       }
+    
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        let tokenParts = deviceToken.map { data in String(format: "%02.2hhx", data) }
+          let token = tokenParts.joined()
+          print("Device Token: \(token)")
+    }
 
 
 }

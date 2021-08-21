@@ -11,6 +11,7 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        NSLog("START!!!")
         self.view.backgroundColor = .white
         
         let button = UIButton()
