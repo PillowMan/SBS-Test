@@ -29,6 +29,10 @@ class CustomView: UIView {
             layer.insertSublayer(shadowLayer!, at: 0)
         }
     }
+    
+    func showShadow(show: Bool){
+        shadowLayer?.shadowOpacity = show ? 0.1 : 0
+    }
 
 }
 

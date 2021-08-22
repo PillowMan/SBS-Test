@@ -7,11 +7,12 @@
 
 import UIKit
 
-class FlashCardView: CustomView {
+class FlashCardView: CustomView{
     
     typealias Action = ()->()
     
     var label:UILabel!
+    var isBackside = false
     
     @objc var getstureTapAction: Action?
     
@@ -29,8 +30,16 @@ class FlashCardView: CustomView {
         }
     }
     
+    func degreeToRadian(degree: CGFloat) -> CGFloat{
+        return (degree * .pi) / 180
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
+        var perspective = CATransform3DIdentity
+        perspective.m34 = -1.0/700
+        self.layer.transform = perspective
+        configTapGestureRecognizer()
         
 //        let frontView = CardSideView()
 //        self.frontView = frontView
@@ -56,12 +65,23 @@ class FlashCardView: CustomView {
        
     }
     
+//    func configTapGesture(){
+//        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(flipCard))
+//        tapGestureRecognizer.numberOfTapsRequired = 1
+//        self.addGestureRecognizer(tapGestureRecognizer)
+//
+//    }
+    
+    @objc func cardTapped(){
+       
+    }
+    
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configFlipTapGestureRecognizer(){
+    func configTapGestureRecognizer(){
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(flipCard))
         self.tapGesture = tapGesture
         self.addGestureRecognizer(tapGesture)
@@ -71,28 +91,58 @@ class FlashCardView: CustomView {
     //MARK: - Отвечает за переворот карты
     
     @objc func flipCard(){
+        let scaleValue:CGFloat = 1.05
+        let yRadian = self.degreeToRadian(degree: 180)
+        let zRadian: CGFloat = self.degreeToRadian(degree: 20)
         
-        let transitionOptions: UIView.AnimationOptions = [.transitionFlipFromBottom]
         
-        UIView.transition(with: self, duration: 0.5, options: transitionOptions, animations: {
-//            self.frontView.isHidden = true
-        })
         
-        UIView.transition(with: self, duration: 0.5, options: transitionOptions, animations: {
-//            self.backView.isHidden = false
-        })
+        var animations = [CABasicAnimation]()
+        let scaleAnimation = CABasicAnimation(keyPath: "transform.scale")
+        scaleAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeOut)
+        scaleAnimation.autoreverses = true
+        scaleAnimation.toValue = [scaleValue, scaleValue]
+        scaleAnimation.duration = 0.3
+
+        animations.append(scaleAnimation)
+
+        let zRotateAnimation = CABasicAnimation(keyPath: "transform.rotation.z")
+        scaleAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeOut)
+        zRotateAnimation.autoreverses = true
+        zRotateAnimation.toValue = isBackside ? zRadian : -zRadian
+        zRotateAnimation.duration = 0.15
+
+        animations.append(zRotateAnimation)
+
+        let xOffsetAnimation = CABasicAnimation(keyPath: "position")
+        xOffsetAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeOut)
+        xOffsetAnimation.autoreverses = true
+        xOffsetAnimation.toValue = [self.layer.position.x + (isBackside ? -40 : 40), self.layer.position.y + 15]
+        xOffsetAnimation.duration = 0.15
+
+        animations.append(xOffsetAnimation)
+
+        let yRotateAnimation = CABasicAnimation(keyPath: "transform.rotation.y")
+        xOffsetAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
+//        yRotateAnimation.fillMode = CAMediaTimingFillMode.forwards
+//        yRotateAnimation.isRemovedOnCompletion = false
+        yRotateAnimation.toValue = isBackside ? -yRadian : yRadian
+        yRotateAnimation.duration = 0.3
+
+        animations.append(yRotateAnimation)
         
+       
+        
+        let animationGroup = CAAnimationGroup()
+        animationGroup.duration = 0.3
+//        animationGroup.fillMode = CAMediaTimingFillMode.forwards
+//        animationGroup.isRemovedOnCompletion = false
+        animationGroup.animations = animations
+        self.layer.add(animationGroup, forKey: nil)
+        self.isBackside = !self.isBackside
+      
         
     }
-    
-//    func flip() {
-//        let toView = viewModel.showingBack ? frontImageView : backImageView
-//        let fromView = viewModel.showingBack ? backImageView : frontImageView
-//               UIView.transitionFromView(fromView, toView: toView, duration: 1, options: .TransitionFlipFromRight, completion: nil)
-//               toView.translatesAutoresizingMaskIntoConstraints = false
-//               toView.spanSuperview()
-//               showingBack = !showingBack
-//           }
   
     
     

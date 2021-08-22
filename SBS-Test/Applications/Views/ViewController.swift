@@ -19,6 +19,8 @@ class ViewController: UIViewController {
         view.viewModel = viewModel
         self.view.addSubview(view)
         
+        
+        
         view.translatesAutoresizingMaskIntoConstraints = false
         view.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
         view.centerYAnchor.constraint(equalTo: self.view.centerYAnchor).isActive = true
