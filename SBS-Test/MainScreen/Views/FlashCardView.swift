@@ -7,7 +7,7 @@
 
 import UIKit
 
-class FlashCardView: CustomView{
+class FlashCardView: CustomView, CAAnimationDelegate{
     
     typealias Action = ()->()
     
@@ -41,26 +41,6 @@ class FlashCardView: CustomView{
         self.layer.transform = perspective
         configTapGestureRecognizer()
         
-//        let frontView = CardSideView()
-//        self.frontView = frontView
-//        self.addSubview(frontView)
-        
-//        frontView.translatesAutoresizingMaskIntoConstraints = false
-//        frontView.topAnchor.constraint(equalTo: self.topAnchor).isActive = true;
-//        frontView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true;
-//        frontView.rightAnchor.constraint(equalTo: self.rightAnchor).isActive = true;
-//        frontView.leftAnchor.constraint(equalTo: self.leftAnchor).isActive = true;
-//
-//        let backView = CardSideView()
-//        backView.isHidden = true
-//        self.backView = backView
-//        self.addSubview(backView)
-//
-//        backView.translatesAutoresizingMaskIntoConstraints = false
-//        backView.topAnchor.constraint(equalTo: self.topAnchor).isActive = true;
-//        backView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true;
-//        backView.rightAnchor.constraint(equalTo: self.rightAnchor).isActive = true;
-//        backView.leftAnchor.constraint(equalTo: self.leftAnchor).isActive = true;
         
        
     }
@@ -96,10 +76,15 @@ class FlashCardView: CustomView{
         let zRadian: CGFloat = self.degreeToRadian(degree: 20)
         
         
+        Timer.scheduledTimer(withTimeInterval: 0.15, repeats: false) { timer in
+            self.shadowLayer?.fillColor = self.isBackside ? UIColor.green.cgColor : UIColor.red.cgColor
+        }
         
         var animations = [CABasicAnimation]()
         let scaleAnimation = CABasicAnimation(keyPath: "transform.scale")
         scaleAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeOut)
+        scaleAnimation.fillMode = CAMediaTimingFillMode.forwards
+        scaleAnimation.isRemovedOnCompletion = false
         scaleAnimation.autoreverses = true
         scaleAnimation.toValue = [scaleValue, scaleValue]
         scaleAnimation.duration = 0.3
@@ -108,6 +93,8 @@ class FlashCardView: CustomView{
 
         let zRotateAnimation = CABasicAnimation(keyPath: "transform.rotation.z")
         scaleAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeOut)
+        zRotateAnimation.fillMode = CAMediaTimingFillMode.forwards
+        zRotateAnimation.isRemovedOnCompletion = false
         zRotateAnimation.autoreverses = true
         zRotateAnimation.toValue = isBackside ? zRadian : -zRadian
         zRotateAnimation.duration = 0.15
@@ -116,20 +103,23 @@ class FlashCardView: CustomView{
 
         let xOffsetAnimation = CABasicAnimation(keyPath: "position")
         xOffsetAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeOut)
+        xOffsetAnimation.fillMode = CAMediaTimingFillMode.forwards
+        xOffsetAnimation.isRemovedOnCompletion = false
         xOffsetAnimation.autoreverses = true
         xOffsetAnimation.toValue = [self.layer.position.x + (isBackside ? -40 : 40), self.layer.position.y + 15]
         xOffsetAnimation.duration = 0.15
 
         animations.append(xOffsetAnimation)
 
-        let yRotateAnimation = CABasicAnimation(keyPath: "transform.rotation.y")
-        xOffsetAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
-//        yRotateAnimation.fillMode = CAMediaTimingFillMode.forwards
-//        yRotateAnimation.isRemovedOnCompletion = false
-        yRotateAnimation.toValue = isBackside ? -yRadian : yRadian
-        yRotateAnimation.duration = 0.3
+        let firstYRotateAnimation = CABasicAnimation(keyPath: "transform.rotation.y")
+        firstYRotateAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
+        firstYRotateAnimation.fillMode = CAMediaTimingFillMode.forwards
+        firstYRotateAnimation.isRemovedOnCompletion = false
+        firstYRotateAnimation.toValue = isBackside ? -yRadian : yRadian
+        firstYRotateAnimation.duration = 0.30
 
-        animations.append(yRotateAnimation)
+        animations.append(firstYRotateAnimation)
+        
         
        
         

@@ -9,7 +9,7 @@ import UIKit
 
 class CustomView: UIView {
 
-    private var shadowLayer: CAShapeLayer?
+    var shadowLayer: CAShapeLayer?
     let cornerRadius: CGFloat = 15
     var fillColor: UIColor {get{return .cyan}}
     
