@@ -7,26 +7,29 @@
 
 import UIKit
 
-class FlashCardView: CustomView, CAAnimationDelegate{
+class FlashCardView: UIView, CAAnimationDelegate{
     
-    typealias Action = ()->()
+    var frontView: CardSideView!
+    var backView: CardSideView!
     
     var label:UILabel!
-    var isBackside = false
     
-    @objc var getstureTapAction: Action?
-    
-//    var frontView: CardSideView!
-//    var backView: CardSideView!
+    var isAnimating = false
+    var isBackside = false {
+        willSet {
+            frontView.isHidden = newValue
+            backView.isHidden = !newValue
+        }
+    }
     
     var tapGesture: UITapGestureRecognizer?
     
     var viewModel: FlashCardViewModel? {
         willSet (viewModel){
             guard let viewModel = viewModel else {return}
-//            self.frontView.viewModel = viewModel.getFrontSideViewModel()
-//            self.backView.viewModel = viewModel.getBackSideViewModel()
-//            self.tapGesture?.isEnabled = viewModel.isVisible
+            self.frontView.viewModel = viewModel.getFrontSideViewModel()
+            self.backView.viewModel = viewModel.getBackSideViewModel()
+            //            self.tapGesture?.isEnabled = viewModel.isVisible
         }
     }
     
@@ -36,26 +39,34 @@ class FlashCardView: CustomView, CAAnimationDelegate{
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
+        frontView = CardSideView()
+        frontView.isHidden = isBackside
+        self.addSubview(frontView);
+        
+        frontView.translatesAutoresizingMaskIntoConstraints = false
+        frontView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        frontView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+        frontView.widthAnchor.constraint(equalToConstant: 270).isActive = true
+        frontView.heightAnchor.constraint(equalToConstant: 150).isActive = true
+        
+        backView = CardSideView()
+        backView.isHidden = !isBackside
+        self.addSubview(backView)
+        
+        backView.layer.transform = CATransform3DMakeRotation(self.degreeToRadian(degree: 180), 0, 1, 0)
+        backView.translatesAutoresizingMaskIntoConstraints = false
+        backView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        backView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+        backView.widthAnchor.constraint(equalToConstant: 270).isActive = true
+        backView.heightAnchor.constraint(equalToConstant: 150).isActive = true
+        
         var perspective = CATransform3DIdentity
         perspective.m34 = -1.0/700
         self.layer.transform = perspective
         configTapGestureRecognizer()
         
-        
-       
     }
-    
-//    func configTapGesture(){
-//        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(flipCard))
-//        tapGestureRecognizer.numberOfTapsRequired = 1
-//        self.addGestureRecognizer(tapGestureRecognizer)
-//
-//    }
-    
-    @objc func cardTapped(){
-       
-    }
-    
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -67,73 +78,70 @@ class FlashCardView: CustomView, CAAnimationDelegate{
         self.addGestureRecognizer(tapGesture)
     }
     
-    
     //MARK: - Отвечает за переворот карты
     
     @objc func flipCard(){
+        guard !isAnimating else {return}
+        
         let scaleValue:CGFloat = 1.05
         let yRadian = self.degreeToRadian(degree: 180)
-        let zRadian: CGFloat = self.degreeToRadian(degree: 20)
         
         
         Timer.scheduledTimer(withTimeInterval: 0.15, repeats: false) { timer in
-            self.shadowLayer?.fillColor = self.isBackside ? UIColor.green.cgColor : UIColor.red.cgColor
+            self.isBackside = !self.isBackside
         }
         
-        var animations = [CABasicAnimation]()
         let scaleAnimation = CABasicAnimation(keyPath: "transform.scale")
-        scaleAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeOut)
-        scaleAnimation.fillMode = CAMediaTimingFillMode.forwards
-        scaleAnimation.isRemovedOnCompletion = false
+        scaleAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.linear)
         scaleAnimation.autoreverses = true
         scaleAnimation.toValue = [scaleValue, scaleValue]
-        scaleAnimation.duration = 0.3
-
-        animations.append(scaleAnimation)
-
+        scaleAnimation.duration = 0.15
+        self.layer.add(scaleAnimation, forKey: nil)
+        
+        var animations = [CABasicAnimation]()
+       
         let zRotateAnimation = CABasicAnimation(keyPath: "transform.rotation.z")
         scaleAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeOut)
-        zRotateAnimation.fillMode = CAMediaTimingFillMode.forwards
-        zRotateAnimation.isRemovedOnCompletion = false
         zRotateAnimation.autoreverses = true
-        zRotateAnimation.toValue = isBackside ? zRadian : -zRadian
+        zRotateAnimation.toValue = isBackside ? self.degreeToRadian(degree: -200) : self.degreeToRadian(degree: 20)
         zRotateAnimation.duration = 0.15
-
+        
         animations.append(zRotateAnimation)
-
+        
         let xOffsetAnimation = CABasicAnimation(keyPath: "position")
         xOffsetAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeOut)
-        xOffsetAnimation.fillMode = CAMediaTimingFillMode.forwards
-        xOffsetAnimation.isRemovedOnCompletion = false
         xOffsetAnimation.autoreverses = true
-        xOffsetAnimation.toValue = [self.layer.position.x + (isBackside ? -40 : 40), self.layer.position.y + 15]
+        xOffsetAnimation.toValue = [self.layer.position.x + (isBackside ? 40 : -40), self.layer.position.y + 15]
         xOffsetAnimation.duration = 0.15
-
+        
         animations.append(xOffsetAnimation)
-
+        
         let firstYRotateAnimation = CABasicAnimation(keyPath: "transform.rotation.y")
         firstYRotateAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
-        firstYRotateAnimation.fillMode = CAMediaTimingFillMode.forwards
-        firstYRotateAnimation.isRemovedOnCompletion = false
-        firstYRotateAnimation.toValue = isBackside ? -yRadian : yRadian
+        firstYRotateAnimation.toValue = -yRadian
         firstYRotateAnimation.duration = 0.30
-
+        
         animations.append(firstYRotateAnimation)
-        
-        
-       
         
         let animationGroup = CAAnimationGroup()
         animationGroup.duration = 0.3
-//        animationGroup.fillMode = CAMediaTimingFillMode.forwards
-//        animationGroup.isRemovedOnCompletion = false
+        animationGroup.fillMode = CAMediaTimingFillMode.forwards
+        animationGroup.isRemovedOnCompletion = false
         animationGroup.animations = animations
+        animationGroup.delegate = self
         self.layer.add(animationGroup, forKey: nil)
-        self.isBackside = !self.isBackside
-      
+        
         
     }
-  
+    
+    func animationDidStart(_ anim: CAAnimation) {
+        self.isAnimating = true;
+    }
+    
+    func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
+        self.isAnimating = false;
+    }
+    
     
     
 }
