@@ -82,12 +82,13 @@ class FlashCardView: UIView, CAAnimationDelegate{
     
     @objc func flipCard(){
         guard !isAnimating else {return}
-        
+        let fullTimeAnimation = 0.30
+        let halfTimeAnimation = fullTimeAnimation/2
         let scaleValue:CGFloat = 1.05
         let yRadian = self.degreeToRadian(degree: 180)
         
         
-        Timer.scheduledTimer(withTimeInterval: 0.15, repeats: false) { timer in
+        Timer.scheduledTimer(withTimeInterval: halfTimeAnimation, repeats: false) { timer in
             self.isBackside = !self.isBackside
         }
         
@@ -95,7 +96,7 @@ class FlashCardView: UIView, CAAnimationDelegate{
         scaleAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.linear)
         scaleAnimation.autoreverses = true
         scaleAnimation.toValue = [scaleValue, scaleValue]
-        scaleAnimation.duration = 0.15
+        scaleAnimation.duration = halfTimeAnimation
         self.layer.add(scaleAnimation, forKey: nil)
         
         var animations = [CABasicAnimation]()
@@ -104,7 +105,7 @@ class FlashCardView: UIView, CAAnimationDelegate{
         scaleAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeOut)
         zRotateAnimation.autoreverses = true
         zRotateAnimation.toValue = isBackside ? self.degreeToRadian(degree: -200) : self.degreeToRadian(degree: 20)
-        zRotateAnimation.duration = 0.15
+        zRotateAnimation.duration = halfTimeAnimation
         
         animations.append(zRotateAnimation)
         
@@ -112,19 +113,19 @@ class FlashCardView: UIView, CAAnimationDelegate{
         xOffsetAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeOut)
         xOffsetAnimation.autoreverses = true
         xOffsetAnimation.toValue = [self.layer.position.x + (isBackside ? 40 : -40), self.layer.position.y + 15]
-        xOffsetAnimation.duration = 0.15
+        xOffsetAnimation.duration = halfTimeAnimation
         
         animations.append(xOffsetAnimation)
         
         let firstYRotateAnimation = CABasicAnimation(keyPath: "transform.rotation.y")
         firstYRotateAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
         firstYRotateAnimation.toValue = -yRadian
-        firstYRotateAnimation.duration = 0.30
+        firstYRotateAnimation.duration = fullTimeAnimation
         
         animations.append(firstYRotateAnimation)
         
         let animationGroup = CAAnimationGroup()
-        animationGroup.duration = 0.3
+        animationGroup.duration = fullTimeAnimation
         animationGroup.fillMode = CAMediaTimingFillMode.forwards
         animationGroup.isRemovedOnCompletion = false
         animationGroup.animations = animations
