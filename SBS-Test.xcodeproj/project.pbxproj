@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B765A694270F7B6300402468 /* TimeInterval+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B765A693270F7B6300402468 /* TimeInterval+Extensions.swift */; };
 		B774F20C26D0ED800020E292 /* FlashCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B774F20B26D0ED800020E292 /* FlashCard.swift */; };
 		B774F20E26D0EDA50020E292 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = B774F20D26D0EDA50020E292 /* Color.swift */; };
 		B774F21026D0EDDF0020E292 /* UIView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B774F20F26D0EDDF0020E292 /* UIView+Extensions.swift */; };
@@ -29,6 +30,7 @@
 		118DA38B6ED9E13D3E51C089 /* Pods_SBS_Test.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SBS_Test.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		44381FCABA2CAE376851A8E9 /* Pods-SBS-Test.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SBS-Test.release.xcconfig"; path = "Target Support Files/Pods-SBS-Test/Pods-SBS-Test.release.xcconfig"; sourceTree = "<group>"; };
 		9BAB88703C9716DAAB5ACA97 /* Pods-SBS-Test.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SBS-Test.debug.xcconfig"; path = "Target Support Files/Pods-SBS-Test/Pods-SBS-Test.debug.xcconfig"; sourceTree = "<group>"; };
+		B765A693270F7B6300402468 /* TimeInterval+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TimeInterval+Extensions.swift"; sourceTree = "<group>"; };
 		B774F20B26D0ED800020E292 /* FlashCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashCard.swift; sourceTree = "<group>"; };
 		B774F20D26D0EDA50020E292 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		B774F20F26D0EDDF0020E292 /* UIView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extensions.swift"; sourceTree = "<group>"; };
@@ -178,6 +180,7 @@
 				B77EC0B32677F53F00BC853B /* UIViewControllers+Extensions.swift */,
 				B774F20D26D0EDA50020E292 /* Color.swift */,
 				B774F20F26D0EDDF0020E292 /* UIView+Extensions.swift */,
+				B765A693270F7B6300402468 /* TimeInterval+Extensions.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -288,6 +291,7 @@
 				B774F21626D0EE900020E292 /* FlashCardViewModel.swift in Sources */,
 				B774F21826D0EEAD0020E292 /* CardSideViewModel.swift in Sources */,
 				B774F20C26D0ED800020E292 /* FlashCard.swift in Sources */,
+				B765A694270F7B6300402468 /* TimeInterval+Extensions.swift in Sources */,
 				B774F21426D0EE620020E292 /* CardSideView.swift in Sources */,
 				B77EC07926773F9200BC853B /* ViewController.swift in Sources */,
 				B774F20E26D0EDA50020E292 /* Color.swift in Sources */,

@@ -39,7 +39,9 @@ class FlashCardView: UIView, CAAnimationDelegate{
     
     var endTime: CFTimeInterval?
     var displayLink: CADisplayLink?
-    var startTouchTime: Date?
+    
+    var holdDragTime = 0.1
+    var isHolded = true
     
     
     var viewModel: FlashCardViewModel? {
@@ -196,10 +198,10 @@ class FlashCardView: UIView, CAAnimationDelegate{
         let dragGesture = UIPanGestureRecognizer(target: self, action: #selector(dragCard(_:)))
         dragGesture.maximumNumberOfTouches = 1
         self.addGestureRecognizer(dragGesture)
+        
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(flipCard))
         self.tapGesture = tapGesture
         self.addGestureRecognizer(tapGesture)
-        self.initialTransform = self.layer.transform
     }
     
     @objc func longPressCard(_ gestureReconizer: UILongPressGestureRecognizer){
@@ -213,40 +215,47 @@ class FlashCardView: UIView, CAAnimationDelegate{
     @objc func dragCard(_ sender: UIPanGestureRecognizer){
         guard let piece = sender.view else {return}
         let translation = sender.translation(in: piece.superview)
-        self.lastSwipeBeginPoint = sender.location(in: piece)
+//        self.lastSwipeBeginPoint = sender.location(in: piece)
+        
         
         if sender.state == .began {
-//            self.startTouchTime = Date()
             self.initialCenter = piece.center
-            
+            self.initialTransform = self.layer.transform
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                self.isHolded = false
+                sender.setTranslation(CGPoint(x: 0,y: 0), in: piece.superview)
+            }
             
         }
         if sender.state == .changed {
-            
-            guard let initialTransform = self.initialTransform else {return}
-            let newCenter = CGPoint(x: initialCenter.x + translation.x, y: initialCenter.y + translation.y)
-            self.center = newCenter
-            let offset = CGPoint(x: newCenter.x - initialCenter.x, y: newCenter.y - initialCenter.y)
-//            let location = sender.translation(in: self)
-            let distance: CGFloat = 170
-            // Calculate the x angle to the point "infront" of usn
-            let xP = CGPoint(x: distance, y: offset.y)
-            let xAngle = atan2(xP.y, xP.x)
-            
-            // Calculate the y angle to the point "infront" of us
-            let yP = CGPoint(x: distance, y: offset.x)
-            let yAngle = atan2(yP.y, yP.x)
-            
-            
-            
-//            guard let startTouchTime = self.startTouchTime else { return }
-//            let interval = Date().timeIntervalSince(startTouchTime)
-//            print(interval)
-            var primaryTransform = CATransform3DIdentity
-            primaryTransform.m34 = -1.0/700
-            primaryTransform = CATransform3DRotate(initialTransform, isBackside ? yAngle : -yAngle, 0, 1, 0) // x axis
-            primaryTransform = CATransform3DRotate(primaryTransform, xAngle, 1, 0, 0)
-            piece.layer.transform = primaryTransform
+            if self.isHolded {
+                
+            } else {
+                guard let initialTransform = self.initialTransform else {return}
+                let newCenter = CGPoint(x: initialCenter.x + translation.x, y: initialCenter.y + translation.y)
+                self.center = newCenter
+                let offset = CGPoint(x: newCenter.x - initialCenter.x, y: newCenter.y - initialCenter.y)
+                let distance: CGFloat = 170
+                // Calculate the x angle to the point "infront" of usn
+                let xP = CGPoint(x: distance, y: offset.y)
+                let xAngle = atan2(xP.y, xP.x)
+                
+                // Calculate the y angle to the point "infront" of us
+                let yP = CGPoint(x: distance, y: offset.x)
+                let yAngle = atan2(yP.y, yP.x)
+                
+                
+                
+                var primaryTransform = CATransform3DIdentity
+                primaryTransform.m34 = -1.0/700
+                primaryTransform = CATransform3DRotate(initialTransform, isBackside ? yAngle : -yAngle, 0, 1, 0) // x axis
+                primaryTransform = CATransform3DRotate(primaryTransform, xAngle, 1, 0, 0)
+                piece.layer.transform = primaryTransform
+            }
+               
+          
+               
+           
         }
         
         if(sender.state == .ended || sender.state == .cancelled){
@@ -310,6 +319,8 @@ class FlashCardView: UIView, CAAnimationDelegate{
         UIView.animate(withDuration: timeAnimation) {
             self.layer.transform = initialTransform
             self.center = self.initialCenter
+        } completion: { finished in
+            self.isHolded = true
         }
     }
     
