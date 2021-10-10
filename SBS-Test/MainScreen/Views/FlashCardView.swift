@@ -209,22 +209,26 @@ class FlashCardView: UIView, CAAnimationDelegate{
         print("Swipe")
     }
     
+    var task: DispatchWorkItem?
+    
     //MARK: - Отвечает за перемещение карты
     //    https://developer.apple.com/documentation/uikit/touches_presses_and_gestures/handling_uikit_gestures/handling_pan_gestures
     
     @objc func dragCard(_ sender: UIPanGestureRecognizer){
         guard let piece = sender.view else {return}
         let translation = sender.translation(in: piece.superview)
-//        self.lastSwipeBeginPoint = sender.location(in: piece)
         
         
         if sender.state == .began {
+            piece.layer.transform.m34 = -1.0/700
             self.initialCenter = piece.center
             self.initialTransform = self.layer.transform
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            let task = DispatchWorkItem {
                 self.isHolded = false
                 sender.setTranslation(CGPoint(x: 0,y: 0), in: piece.superview)
             }
+            self.task = task
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: task)
             
         }
         if sender.state == .changed {
@@ -261,8 +265,46 @@ class FlashCardView: UIView, CAAnimationDelegate{
         if(sender.state == .ended || sender.state == .cancelled){
 //            guard let beginPoint = lastSwipeBeginPoint else { return }
 //            let endPoint = sender.location(in: piece)
-                        returnCard()
+            self.task?.cancel()
+            
+            if self.isHolded {
+                if self.isBackside {
+                    let animationTime = 0.6
+                    let rotateTime = animationTime / 2 / 2
+                    
+                    let startTime = CACurrentMediaTime()
+                    self.endTime = rotateTime + startTime
+                    
+                    self.displayLink = CADisplayLink(target: self, selector: #selector(changeView))
+                    self.displayLink?.add(to: .current, forMode: .common)
+                    
+                    UIView.animate(withDuration: animationTime/2) {
+                        let multiplier = abs(translation.x) > abs(translation.y) ? abs(piece.bounds.width/translation.x) : abs(piece.bounds.height/translation.y)
+                        guard multiplier > 0 else {return}
+                        piece.transform = CGAffineTransform(translationX: translation.x * multiplier, y: translation.y * multiplier)
+                    } completion: { finished in
+                        UIView.animate(withDuration: animationTime/2) {
+                            piece.transform = CGAffineTransform(translationX: 0, y: 0)
+                        }
+                    }
+               
+                } else {
+                    UIView.animate(withDuration: 0.3) {
+                        let multiplier = abs(translation.x) > abs(translation.y) ? abs(piece.bounds.width/translation.x) : abs(piece.bounds.height/translation.y)
+                        guard multiplier > 0 else {return}
+                        piece.transform = CGAffineTransform(translationX: translation.x * multiplier, y: translation.y * multiplier)
+                    } completion: { finished in
+                        UIView.animate(withDuration: 0.3) {
+                            piece.transform = CGAffineTransform(translationX: 0, y: 0)
+                        }
+                    }
+                }
+                
+            } else {
+                    returnCard()
+            }
            
+            self.isHolded = true
             
             //            flipCard()
             //            var defaultTransform = CATransform3DIdentity
@@ -377,6 +419,8 @@ class FlashCardView: UIView, CAAnimationDelegate{
         
         let animationGroup = CAAnimationGroup()
         animationGroup.duration = fullTimeAnimation
+//        animationGroup.isRemovedOnCompletion = false
+//        animationGroup.fillMode = .forwards
         animationGroup.animations = animations
         animationGroup.delegate = self
         self.layer.add(animationGroup, forKey: nil)
