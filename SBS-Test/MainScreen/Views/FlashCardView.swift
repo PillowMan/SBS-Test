@@ -32,6 +32,7 @@ class FlashCardView: UIView, CAAnimationDelegate{
     var maxOffset = CGPoint()
     var initialRotate = [0,0];
     var initialTransform: CATransform3D?
+    
     var lastSwipeBeginPoint: CGPoint?
     var transformRotate: (x: CATransform3D, y: CATransform3D) = (CATransform3DIdentity, CATransform3DIdentity)
     
@@ -252,8 +253,8 @@ class FlashCardView: UIView, CAAnimationDelegate{
                 
                 var primaryTransform = CATransform3DIdentity
                 primaryTransform.m34 = -1.0/700
-                primaryTransform = CATransform3DRotate(initialTransform, isBackside ? yAngle : -yAngle, 0, 1, 0) // x axis
-                primaryTransform = CATransform3DRotate(primaryTransform, xAngle, 1, 0, 0)
+                primaryTransform = CATransform3DRotate(initialTransform, -yAngle, 0, 1, 0) // x axis
+                primaryTransform = CATransform3DRotate(primaryTransform, isBackside ? -xAngle : xAngle, 1, 0, 0) // y axis
                 piece.layer.transform = primaryTransform
             }
                
@@ -354,19 +355,29 @@ class FlashCardView: UIView, CAAnimationDelegate{
         }
     }
     
+    
     func returnCard(){
-        guard let initialTransform = self.initialTransform else {return}
-        let timeAnimation = 0.2
         
-        UIView.animate(withDuration: timeAnimation) {
-            self.layer.transform = initialTransform
+        let animationTime = 0.2
+        
+        let currentTransform = self.layer.transform
+
+        self.layer.transform = self.initialTransform!
+        
+        let transform = CABasicAnimation(keyPath: "transform")
+        transform.fromValue = currentTransform
+        
+        transform.duration = animationTime
+        self.layer.add(transform, forKey: "transform")
+        
+        UIView.animate(withDuration: animationTime) {
             self.center = self.initialCenter
-        } completion: { finished in
-            self.isHolded = true
         }
+
     }
+     
     
-    
+    /*
     @objc func flipCard(){
         guard !isAnimating else {return}
         let fullTimeAnimation = 0.6
@@ -395,7 +406,7 @@ class FlashCardView: UIView, CAAnimationDelegate{
         let zRotateAnimation = CABasicAnimation(keyPath: "transform.rotation.z")
         scaleAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeOut)
         zRotateAnimation.autoreverses = true
-        zRotateAnimation.toValue = isBackside ? self.degreeToRadian(degree: 160) : self.degreeToRadian(degree: 20)
+        zRotateAnimation.toValue = isBackside ? self.degreeToRadian(degree: -200) : self.degreeToRadian(degree: 20)
         zRotateAnimation.duration = halfTimeAnimation
 
         animations.append(zRotateAnimation)
@@ -419,39 +430,124 @@ class FlashCardView: UIView, CAAnimationDelegate{
         
         let animationGroup = CAAnimationGroup()
         animationGroup.duration = fullTimeAnimation
-//        animationGroup.isRemovedOnCompletion = false
-//        animationGroup.fillMode = .forwards
+        animationGroup.isRemovedOnCompletion = false
+        animationGroup.fillMode = .forwards
         animationGroup.animations = animations
-        animationGroup.delegate = self
+//        animationGroup.delegate = self
         self.layer.add(animationGroup, forKey: nil)
         
     }
-     
+    */
     
-//    @objc func flipCard(){
-//        guard !isAnimating else {return}
-//        let fullTimeAnimation = 1.0
-//        let halfTimeAnimation = fullTimeAnimation/2
-//        let scaleValue:CGFloat = 1.05
-//        let yRadian = self.degreeToRadian(degree: 180)
-//
-//        let startTime = CACurrentMediaTime()
-//        self.endTime = halfTimeAnimation + startTime
-//
-//        self.displayLink = CADisplayLink(target: self, selector: #selector(changeView))
-//        self.displayLink?.add(to: .current, forMode: .common)
-//
-//        UIView.animate(withDuration: fullTimeAnimation) {
-//            self.layer.transform = CATransform3DMakeRotation(self.degreeToRadian(degree: 180), 0, 1, 0)
-//        }
-//        UIView.animate(withDuration: halfTimeAnimation, delay: 0, options: [.autoreverse]) {
-//            self.transform = CGAffineTransform(rotationAngle: self.degreeToRadian(degree: self.isBackside ? -20 : 20))
-//        } completion: { finished in
-//            self.transform = CGAffineTransform(rotationAngle: 0)
-//        }
-//
-//    }
+    // https://www.biteinteractive.com/taking-control-of-rotation-animations-in-ios/
+    @objc func flipCard(){
+        guard !isAnimating else {return}
+        let fullTimeAnimation = 0.6
+        let halfTimeAnimation = fullTimeAnimation/2
+        let scaleValue:CGFloat = 1.15
+        let angle = isBackside ? CGFloat.pi : -CGFloat.pi
+        
+        let startTime = CACurrentMediaTime()
+        self.endTime = halfTimeAnimation + startTime
+
+        self.displayLink = CADisplayLink(target: self, selector: #selector(changeView))
+        self.displayLink?.add(to: .current, forMode: .common)
+        
+        var animations = [CABasicAnimation]()
+        
+        let scaleAnimation = CABasicAnimation(keyPath: "transform.scale")
+        scaleAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.linear)
+        scaleAnimation.autoreverses = true
+        scaleAnimation.toValue = [scaleValue, scaleValue]
+        scaleAnimation.duration = halfTimeAnimation
+        animations.append(scaleAnimation)
+        
+        let xOffsetAnimation = CABasicAnimation(keyPath: "position")
+        xOffsetAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeOut)
+        xOffsetAnimation.autoreverses = true
+        xOffsetAnimation.toValue = [self.layer.position.x + (isBackside ? -40 : 40), self.layer.position.y + 15]
+        xOffsetAnimation.duration = halfTimeAnimation
+        animations.append(xOffsetAnimation)
+        
+        // Z-Rotate
+        let zRotateAnimation = CABasicAnimation(keyPath: "transform.rotation.z")
+        zRotateAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeOut)
+        zRotateAnimation.autoreverses = true
+        zRotateAnimation.toValue = isBackside ? self.degreeToRadian(degree: 160) : self.degreeToRadian(degree: 20)
+        zRotateAnimation.duration = halfTimeAnimation
+        animations.append(zRotateAnimation)
+        
+        // Spin
+        let spin = CABasicAnimation(keyPath: "transform.rotation.y")
+        spin.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
+        spin.duration = fullTimeAnimation
+        spin.toValue = angle
+        animations.append(spin)
+        
+        // Update transform after animations
+        
+        var perspective = CATransform3DRotate(self.layer.transform, angle, 0, 1, 0)
+        perspective.m34 = -1.0/700.0
+        
+        CATransaction.begin()
+        CATransaction.setCompletionBlock {
+            self.layer.transform = perspective
+            self.layer.removeAllAnimations()
+        }
+        
+        // Group
+        
+        let animationGroup = CAAnimationGroup()
+        animationGroup.duration = fullTimeAnimation
+        animationGroup.isRemovedOnCompletion = false
+        animationGroup.fillMode = .forwards
+        animationGroup.animations = animations
+        animationGroup.delegate = self
+        self.layer.add(animationGroup, forKey: nil)
+        CATransaction.commit()
+        
+        
+        
+    }
     
+    //https://oleb.net/blog/2012/11/prevent-caanimation-snap-back/
+    /*
+    @objc func flipCard(){
+        guard !isAnimating else {return}
+        let initialTransform = self.layer.transform
+        let fullTimeAnimation = 0.6
+        let halfTimeAnimation = fullTimeAnimation/2
+        
+        var perspective = CATransform3DIdentity
+        perspective.m34 = -1.0/700
+        perspective = isBackside ? perspective : CATransform3DRotate(perspective, self.degreeToRadian(degree: 180), 0, 1, 0)
+        
+        print(self.layer.transform)
+        
+        self.layer.transform = perspective
+        
+        
+        CATransaction.begin()
+        CATransaction.setCompletionBlock {
+            print(self.layer.transform)
+        }
+        let yRotateAnimation = CABasicAnimation(keyPath: "transform")
+        yRotateAnimation.fromValue = initialTransform
+        yRotateAnimation.duration = 1
+        self.layer.add(yRotateAnimation, forKey: "transform")
+        CATransaction.commit()
+
+        
+//        let zRotateAnimation = CABasicAnimation(keyPath: "transform.rotation.z")
+//        zRotateAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeOut)
+//        zRotateAnimation.autoreverses = true
+//        zRotateAnimation.toValue = isBackside ? self.degreeToRadian(degree: -200) : self.degreeToRadian(degree: 20)
+//        zRotateAnimation.duration = halfTimeAnimation
+//        zRotateAnimation.isAdditive = true
+//        self.layer.add(zRotateAnimation, forKey: "transform.rotation.z")
+        
+    }
+    */
     func animationDidStart(_ anim: CAAnimation) {
         self.isAnimating = true
        
@@ -459,7 +555,6 @@ class FlashCardView: UIView, CAAnimationDelegate{
     
     func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
         self.isAnimating = false
-        self.saveTransform()
     }
     
     
