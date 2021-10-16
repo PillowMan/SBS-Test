@@ -455,6 +455,7 @@ class FlashCardView: UIView, CAAnimationDelegate{
         
         var animations = [CABasicAnimation]()
         
+        // Scale
         let scaleAnimation = CABasicAnimation(keyPath: "transform.scale")
         scaleAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.linear)
         scaleAnimation.autoreverses = true
@@ -462,6 +463,7 @@ class FlashCardView: UIView, CAAnimationDelegate{
         scaleAnimation.duration = halfTimeAnimation
         animations.append(scaleAnimation)
         
+        // Position
         let xOffsetAnimation = CABasicAnimation(keyPath: "position")
         xOffsetAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeOut)
         xOffsetAnimation.autoreverses = true
