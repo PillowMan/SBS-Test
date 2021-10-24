@@ -12,7 +12,7 @@ import SpriteKit
 //TODO: - Исправить краш, если нажать быстро еще раз до карты после свайпа
 //TODO: - Сделать все жесты в одном методе https://developer.apple.com/documentation/uikit/touches_presses_and_gestures/coordinating_multiple_gesture_recognizers/preferring_one_gesture_over_another https://www.google.com/search?q=UIPanGestureRecognizer+and+UITapGestureRecognizer&newwindow=1&client=safari&rls=en&biw=1252&bih=713&sxsrf=AOaemvJ1VTHxNe6ISeWrZdUoNzVAlXaI9A%3A1630869630513&ei=fhg1YejcHt6Rxc8P_cqQwAI&oq=UIPanGestureRecognizer+and+UITapGestureRecognizer&gs_lcp=Cgdnd3Mtd2l6EAMyBQgAEM0CMgUIABDNAjIFCAAQzQIyBQgAEM0CMgUIABDNAjoHCAAQRxCwAzoECCMQJzoKCAAQgAQQhwIQFDoFCAAQgAQ6BggAEAoQQzoFCAAQywE6BAgAEBM6CAgAEBYQHhATOgYIABAWEB46BAgAEB46BggAEAgQHjoGCAAQBxAeSgQIQRgAUM_KuQFYp466AWDuj7oBaANwAngAgAG5AYgBrA6SAQQwLjE1mAEAoAEBoAECyAEIwAEB&sclient=gws-wiz&ved=0ahUKEwjok4HoxujyAhXeSPEDHX0lBCgQ4dUDCA0&uact=5
 
-class FlashCardView: UIView, CAAnimationDelegate{
+class FlashCardView: UIView, CAAnimationDelegate, UIGestureRecognizerDelegate{
     
     var frontView: CardSideView!
     var backView: CardSideView!
@@ -20,6 +20,7 @@ class FlashCardView: UIView, CAAnimationDelegate{
     var label:UILabel!
     
     var isAnimating = false
+    var isSwipeMode = true
     var longPressed = false
     var isBackside = false {
         willSet {
@@ -196,9 +197,13 @@ class FlashCardView: UIView, CAAnimationDelegate{
     //MARK: - Отвечает за переворот карты
     
     func configTapGestureRecognizer(){
-        let dragGesture = UIPanGestureRecognizer(target: self, action: #selector(dragCard(_:)))
-        dragGesture.maximumNumberOfTouches = 1
-        self.addGestureRecognizer(dragGesture)
+//        let dragGesture = UIPanGestureRecognizer(target: self, action: #selector(dragCard(_:)))
+//        dragGesture.maximumNumberOfTouches = 1
+//        self.addGestureRecognizer(dragGesture)
+        
+        let swipGesture = UIPanGestureRecognizer(target: self, action: #selector(swipe(_:)))
+        swipGesture.maximumNumberOfTouches = 1
+        self.addGestureRecognizer(swipGesture)
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(flipCard))
         self.tapGesture = tapGesture
@@ -331,6 +336,107 @@ class FlashCardView: UIView, CAAnimationDelegate{
         }
         
     }
+    
+        
+    @objc func swipe(_ sender: UIPanGestureRecognizer) {
+//        guard self.isSwipeMode else {return}
+        guard let piece = sender.view else {return}
+        let translation = sender.translation(in: piece.superview)
+        
+        let halfWidth = piece.bounds.width / 2
+        let halfHeight = piece.bounds.height / 2
+        
+        
+        
+        if sender.state == .began {
+            piece.layer.transform.m34 = -1.0/700
+            self.initialCenter = piece.center
+            self.initialTransform = self.layer.transform
+//            let task = DispatchWorkItem {
+//                self.isSwipeMode = false
+//                sender.setTranslation(CGPoint(x: 0,y: 0), in: piece.superview)
+//            }
+//            self.task = task
+//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: task)
+        }
+        
+        if(sender.state == .ended || sender.state == .cancelled){
+//            self.task?.cancel()
+            
+            if self.isBackside {
+                let animationTime = 0.6
+                let rotateTime = animationTime / 2 / 2
+                
+                let startTime = CACurrentMediaTime()
+                self.endTime = rotateTime + startTime
+                
+                self.displayLink = CADisplayLink(target: self, selector: #selector(changeView))
+                self.displayLink?.add(to: .current, forMode: .common)
+                
+                UIView.animate(withDuration: animationTime/2) {
+                    let multiplier = abs(translation.x) > abs(translation.y) ? abs(piece.bounds.width/translation.x) : abs(piece.bounds.height/translation.y)
+                    guard multiplier > 0 else {
+                        
+                        return}
+                    piece.transform = CGAffineTransform(translationX: translation.x * multiplier, y: translation.y * multiplier)
+                } completion: { finished in
+                            
+                    UIView.animate(withDuration: animationTime/2) {
+                        piece.transform = CGAffineTransform(translationX: 0, y: 0)
+                    }
+                }
+           
+            } else {
+                
+                var xOffset = 0.0
+                var yOffset = 0.0
+                
+                let xMul = translation.x / halfWidth
+                let yMul = translation.y / halfWidth
+                
+                let xDirection:CGFloat = translation.x < 0 ? -1 : 1
+                let yDirection:CGFloat = translation.y < 0 ? -1 : 1
+                
+                if abs(xMul) > 1 || abs(yMul) > 1 {
+                    xOffset = abs(xMul) > 1 ? (halfWidth * xDirection) : translation.x
+                    yOffset = abs(yMul) > 1 ? (halfHeight * yDirection) : translation.y
+                    print("Full swipe")
+                } else {
+                    
+                //TODO: - если палец смещен по x-оси на 1, то нужно определить его смещение когда он дойдет до крайней точки Y
+                    if abs(xMul) > abs(yMul) {
+                        xOffset = halfWidth * xDirection
+                        if translation.y != 0 {
+                            yOffset = translation.y / ((halfWidth - abs(translation.x)) / halfWidth * translation.y) + translation.y
+                        }
+                    } else {
+                        if translation.x != 0 {
+                            xOffset = ((halfHeight - abs(translation.y)) / halfHeight * translation.x) + translation.x
+                        }
+                        yOffset = halfHeight * yDirection
+                    }
+                    
+//                    print("xOffset = \(xOffset) yOffset = \(yOffset) mul = \(multiplier)\nxTrans = \(translation.x) yTrans = \(translation.y)")
+                    
+                    
+                }
+                
+                let position = CABasicAnimation(keyPath: "position")
+                position.autoreverses = true
+                position.fromValue = self.initialCenter
+                position.toValue = [ piece.center.x + xOffset * 2.1, piece.center.y + yOffset * 2.1]
+                position.duration = 0.3
+                self.layer.add(position, forKey: nil)
+            }
+            
+        }
+        
+        
+        
+        
+    }
+    
+    
     private func saveTransform(){
     var perspective = CATransform3DIdentity
     perspective.m34 = -1.0/700
@@ -440,6 +546,10 @@ class FlashCardView: UIView, CAAnimationDelegate{
     */
     
     // https://www.biteinteractive.com/taking-control-of-rotation-animations-in-ios/
+    // https://oleb.net/blog/2012/11/prevent-caanimation-snap-back/
+    // https://habr.com/ru/post/450172/
+    // https://stackoverflow.com/questions/6059054/cabasicanimation-resets-to-initial-value-after-animation-completes
+    
     @objc func flipCard(){
         guard !isAnimating else {return}
         let fullTimeAnimation = 0.6
@@ -507,9 +617,6 @@ class FlashCardView: UIView, CAAnimationDelegate{
         animationGroup.delegate = self
         self.layer.add(animationGroup, forKey: nil)
         CATransaction.commit()
-        
-        
-        
     }
     
     //https://oleb.net/blog/2012/11/prevent-caanimation-snap-back/
@@ -558,6 +665,10 @@ class FlashCardView: UIView, CAAnimationDelegate{
     func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
         self.isAnimating = false
     }
+    
+//    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+//        return true
+//    }
     
     
 }
