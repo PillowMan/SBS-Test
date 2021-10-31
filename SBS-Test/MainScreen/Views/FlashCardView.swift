@@ -245,22 +245,8 @@ class FlashCardView: UIView, CAAnimationDelegate, UIGestureRecognizerDelegate{
                 let newCenter = CGPoint(x: initialCenter.x + translation.x, y: initialCenter.y + translation.y)
                 self.center = newCenter
                 let offset = CGPoint(x: newCenter.x - initialCenter.x, y: newCenter.y - initialCenter.y)
-                let distance: CGFloat = 170
-                // Calculate the x angle to the point "infront" of usn
-                let xP = CGPoint(x: distance, y: offset.y)
-                let xAngle = atan2(xP.y, xP.x)
                 
-                // Calculate the y angle to the point "infront" of us
-                let yP = CGPoint(x: distance, y: offset.x)
-                let yAngle = atan2(yP.y, yP.x)
-                
-                
-                
-                var primaryTransform = CATransform3DIdentity
-                primaryTransform.m34 = -1.0/700
-                primaryTransform = CATransform3DRotate(initialTransform, -yAngle, 0, 1, 0) // x axis
-                primaryTransform = CATransform3DRotate(primaryTransform, isBackside ? -xAngle : xAngle, 1, 0, 0) // y axis
-                piece.layer.transform = primaryTransform
+                piece.layer.transform = rotate(offset)
             }
                
           
@@ -337,6 +323,26 @@ class FlashCardView: UIView, CAAnimationDelegate, UIGestureRecognizerDelegate{
         
     }
     
+    private func rotate(_ offset: CGPoint) -> CATransform3D{
+        guard let initialTransform = self.initialTransform else {return CATransform3DIdentity}
+        let distance: CGFloat = 170
+        
+        let xP = CGPoint(x: distance, y: offset.y)
+        let xAngle = atan2(xP.y, xP.x)
+        
+        // Calculate the y angle to the point "infront" of us
+        let yP = CGPoint(x: distance, y: offset.x)
+        let yAngle = atan2(yP.y, yP.x)
+        
+        
+        
+        var primaryTransform = CATransform3DIdentity
+        primaryTransform.m34 = -1.0/700
+        primaryTransform = CATransform3DRotate(initialTransform, -yAngle, 0, 1, 0)
+        primaryTransform = CATransform3DRotate(primaryTransform, isBackside ? -xAngle : xAngle, 1, 0, 0) // y axis
+        return primaryTransform
+    }
+    
         
     @objc func swipe(_ sender: UIPanGestureRecognizer) {
 //        guard self.isSwipeMode else {return}
@@ -361,8 +367,72 @@ class FlashCardView: UIView, CAAnimationDelegate, UIGestureRecognizerDelegate{
         }
         
         if(sender.state == .ended || sender.state == .cancelled){
-//            self.task?.cancel()
+            var xOffset = 0.0
+            var yOffset = 0.0
             
+            let xMul = translation.x / halfWidth
+            let yMul = translation.y / halfWidth
+            
+            let xDirection:CGFloat = translation.x < 0 ? -1 : 1
+            let yDirection:CGFloat = translation.y < 0 ? -1 : 1
+            
+            if abs(xMul) > 1 || abs(yMul) > 1 {
+                xOffset = abs(xMul) > 1 ? (halfWidth * xDirection) : translation.x
+                yOffset = abs(yMul) > 1 ? (halfHeight * yDirection) : translation.y
+            } else {
+                if abs(xMul) > abs(yMul) {
+                    xOffset = halfWidth * xDirection
+                    if translation.y != 0 {
+                        yOffset = translation.y / ((halfWidth - abs(translation.x)) / halfWidth * translation.y) + translation.y
+                    }
+                } else {
+                    if translation.x != 0 {
+                        xOffset = ((halfHeight - abs(translation.y)) / halfHeight * translation.x) + translation.x
+                    }
+                    yOffset = halfHeight * yDirection
+                }
+                
+//                    print("xOffset = \(xOffset) yOffset = \(yOffset) mul = \(multiplier)\nxTrans = \(translation.x) yTrans = \(translation.y)")
+                
+                
+            }
+            
+            if isBackside {
+                let startTime = CACurrentMediaTime()
+                self.endTime = 0.15 + startTime
+                
+                self.displayLink = CADisplayLink(target: self, selector: #selector(changeView))
+                self.displayLink?.add(to: .current, forMode: .common)
+                
+                
+                self.layer.transform = getDefaultTransfrom()
+                
+                let transform = CABasicAnimation(keyPath: "transform")
+                transform.duration = 0.3
+                transform.fromValue = self.initialTransform
+                self.layer.add(transform, forKey: nil)
+            } else {
+                let transform = CABasicAnimation(keyPath: "transform")
+                transform.duration = 0.3
+                transform.fromValue = self.initialTransform
+                transform.toValue = rotate(CGPoint(x: xOffset, y: yOffset))
+                transform.autoreverses = true
+                self.layer.add(transform, forKey: nil)
+            }
+            
+            
+            
+            let position = CABasicAnimation(keyPath: "position")
+            position.autoreverses = true
+            position.fromValue = self.initialCenter
+            position.toValue = [ piece.center.x + xOffset * 2.1, piece.center.y + yOffset * 2.1]
+            position.duration = 0.3
+            self.layer.add(position, forKey: nil)
+            }
+        
+       
+//            self.task?.cancel()
+            /*
             if self.isBackside {
                 let animationTime = 0.6
                 let rotateTime = animationTime / 2 / 2
@@ -400,7 +470,7 @@ class FlashCardView: UIView, CAAnimationDelegate, UIGestureRecognizerDelegate{
                 if abs(xMul) > 1 || abs(yMul) > 1 {
                     xOffset = abs(xMul) > 1 ? (halfWidth * xDirection) : translation.x
                     yOffset = abs(yMul) > 1 ? (halfHeight * yDirection) : translation.y
-                    print("Full swipe")
+                    print("Full swipe x = \(xOffset) y = \(yOffset)")
                 } else {
                     
                 //TODO: - если палец смещен по x-оси на 1, то нужно определить его смещение когда он дойдет до крайней точки Y
@@ -421,6 +491,13 @@ class FlashCardView: UIView, CAAnimationDelegate, UIGestureRecognizerDelegate{
                     
                 }
                 
+                let transform = CABasicAnimation(keyPath: "transform")
+                transform.duration = 0.3
+                transform.fromValue = self.initialTransform
+                transform.toValue = rotate(CGPoint(x: xOffset, y: yOffset))
+                transform.autoreverses = true
+                self.layer.add(transform, forKey: nil)
+                
                 let position = CABasicAnimation(keyPath: "position")
                 position.autoreverses = true
                 position.fromValue = self.initialCenter
@@ -430,10 +507,16 @@ class FlashCardView: UIView, CAAnimationDelegate, UIGestureRecognizerDelegate{
             }
             
         }
+        */
         
         
         
-        
+    }
+    
+    func getDefaultTransfrom() -> CATransform3D{
+        var transform = CATransform3DIdentity
+        transform.m34 = -1/700
+        return transform
     }
     
     
