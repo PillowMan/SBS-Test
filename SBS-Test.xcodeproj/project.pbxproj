@@ -23,6 +23,7 @@
 		B77EC08126773F9D00BC853B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B77EC07F26773F9D00BC853B /* LaunchScreen.storyboard */; };
 		B77EC0B22677F19F00BC853B /* Box.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77EC0B12677F19F00BC853B /* Box.swift */; };
 		B77EC0B42677F53F00BC853B /* UIViewControllers+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77EC0B32677F53F00BC853B /* UIViewControllers+Extensions.swift */; };
+		B7A954572737E6D70044AD50 /* CATransform3D+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A954562737E6D70044AD50 /* CATransform3D+Extensions.swift */; };
 		D7E24F1C3E7D6369EAD362D4 /* Pods_SBS_Test.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 118DA38B6ED9E13D3E51C089 /* Pods_SBS_Test.framework */; };
 /* End PBXBuildFile section */
 
@@ -48,6 +49,7 @@
 		B77EC08226773F9D00BC853B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B77EC0B12677F19F00BC853B /* Box.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Box.swift; sourceTree = "<group>"; };
 		B77EC0B32677F53F00BC853B /* UIViewControllers+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewControllers+Extensions.swift"; sourceTree = "<group>"; };
+		B7A954562737E6D70044AD50 /* CATransform3D+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CATransform3D+Extensions.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -181,6 +183,7 @@
 				B774F20D26D0EDA50020E292 /* Color.swift */,
 				B774F20F26D0EDDF0020E292 /* UIView+Extensions.swift */,
 				B765A693270F7B6300402468 /* TimeInterval+Extensions.swift */,
+				B7A954562737E6D70044AD50 /* CATransform3D+Extensions.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -300,6 +303,7 @@
 				B77EC0B42677F53F00BC853B /* UIViewControllers+Extensions.swift in Sources */,
 				B77EC07526773F9200BC853B /* AppDelegate.swift in Sources */,
 				B77EC0B22677F19F00BC853B /* Box.swift in Sources */,
+				B7A954572737E6D70044AD50 /* CATransform3D+Extensions.swift in Sources */,
 				B774F21026D0EDDF0020E292 /* UIView+Extensions.swift in Sources */,
 				B77EC07726773F9200BC853B /* SceneDelegate.swift in Sources */,
 			);

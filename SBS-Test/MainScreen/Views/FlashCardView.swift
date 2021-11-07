@@ -245,11 +245,7 @@ class FlashCardView: UIView, CAAnimationDelegate, UIGestureRecognizerDelegate{
                 self.center = newCenter
                 let offset = CGPoint(x: newCenter.x - initialCenter.x, y: newCenter.y - initialCenter.y)
                 
-                piece.layer.transform = rotate(offset)
-            
-               
-          
-               
+                piece.layer.transform = rotateTo(offset)
            
         }
         
@@ -269,33 +265,43 @@ class FlashCardView: UIView, CAAnimationDelegate, UIGestureRecognizerDelegate{
             
             if xOffset > self.defaultWidth || yOffset > self.defaultHeight {
                
-               let transform = piece.layer.transform
-               piece.layer.transform = getDefaultTransfrom()
-               
-               let transformAnimation = CABasicAnimation(keyPath: "transform")
-               transformAnimation.fromValue = transform
-               transformAnimation.duration = 0.3
-               piece.layer.add(transformAnimation, forKey: nil)
-               UIView.animate(withDuration: 0.3) {
-                   piece.center = self.initialCenter
-               }
+                self.returnCard()
            
-           } else if (xOffset >= self.defaultWidth/2 && xOffset <= self.defaultWidth)
-                || (yOffset >= defaultHeight/2 && yOffset <= self.defaultHeight) {
+           } else if (xOffset >= self.defaultWidth/3 && xOffset <= self.defaultWidth)
+                || (yOffset >= defaultHeight/3 && yOffset <= self.defaultHeight) {
                 let angle = atan2(translation.y, translation.x)
-                var point = CGPoint(x: self.defaultWidth, y: self.defaultHeight)
+                var point = CGPoint(x: self.defaultWidth * xDirection, y: self.defaultHeight * yDirection)
                 if xOffset / defaultWidth > yOffset / defaultHeight {
-                    point.y = self.defaultWidth * (sin(angle) / cos(angle))
+                    point.y = point.x * (sin(angle) / cos(angle))
                 } else {
-                    point.x = self.defaultHeight * (cos(angle) / sin(angle))
+                    point.x = point.y * (cos(angle) / sin(angle))
                 }
-                print("swipe x = \(point.x*xDirection) y = \(point.y*yDirection)")
-                returnCard()
+               if isBackside {
+                   let startTime = CACurrentMediaTime()
+                   self.endTime = 0.35 + startTime
+               
+                   self.displayLink = CADisplayLink(target: self, selector: #selector(changeView))
+                   self.displayLink?.add(to: .current, forMode: .common)
+                   
+                   self.rotateTo(CGPoint(x: 0, y: 0), withDuration: 0.2) {
+                       self.returnCard()
+                   }
+                   
+               } else {
+                   self.rotateTo(point, withDuration: 0.2) {
+                       self.returnCard()
+                   }
+               }
+               UIView.animate(withDuration: 0.2) {
+                   piece.center = CGPoint(x: piece.center.x + point.x, y: piece.center.y + point.y)
+               }
+               
+            
                 
             } else {
-                print("return back")
-                returnCard()
+                self.returnCard()
             }
+            
 //            self.task?.cancel()
             
 //            if self.isHolded {
@@ -362,8 +368,9 @@ class FlashCardView: UIView, CAAnimationDelegate, UIGestureRecognizerDelegate{
         
     }
     
-    private func rotate(_ offset: CGPoint) -> CATransform3D{
-        guard let initialTransform = self.initialTransform else {return CATransform3DIdentity}
+    //MARK: - Rotate transform
+    private func rotateTo(_ offset: CGPoint) -> CATransform3D{
+        guard let initialTransform = self.initialTransform else {return .defaultTransform}
         let distance: CGFloat = 170
         
         let xP = CGPoint(x: distance, y: offset.y)
@@ -381,6 +388,28 @@ class FlashCardView: UIView, CAAnimationDelegate, UIGestureRecognizerDelegate{
         primaryTransform = CATransform3DRotate(initialTransform, -yAngle, 0, 1, 0)
         primaryTransform = CATransform3DRotate(primaryTransform, isBackside ? -xAngle : xAngle, 1, 0, 0) // y axis
         return primaryTransform
+    }
+    
+    //MARK: - Move with animation
+    @objc func rotateTo(_ offset: CGPoint, withDuration: CGFloat, completion: (() -> Void)? = nil){
+        
+        // transform
+        let primaryTransform = self.layer.transform
+        let transform = self.rotateTo(offset)
+        self.layer.transform = transform
+        
+        // completion
+        CATransaction.begin()
+        CATransaction.setCompletionBlock {
+            completion?()
+        }
+        
+        let transformAnimation = CABasicAnimation(keyPath: "transform")
+        transformAnimation.fromValue = primaryTransform
+        transformAnimation.duration = withDuration
+        self.layer.add(transformAnimation, forKey: nil)
+        CATransaction.commit()
+
     }
     
         
@@ -448,7 +477,7 @@ class FlashCardView: UIView, CAAnimationDelegate, UIGestureRecognizerDelegate{
                 self.displayLink?.add(to: .current, forMode: .common)
                 
                 
-                self.layer.transform = getDefaultTransfrom()
+                self.layer.transform = .defaultTransform
                 
                 let transform = CABasicAnimation(keyPath: "transform")
                 transform.duration = 0.3
@@ -458,7 +487,7 @@ class FlashCardView: UIView, CAAnimationDelegate, UIGestureRecognizerDelegate{
                 let transform = CABasicAnimation(keyPath: "transform")
                 transform.duration = 0.3
                 transform.fromValue = self.initialTransform
-                transform.toValue = rotate(CGPoint(x: xOffset, y: yOffset))
+                transform.toValue = rotateTo(CGPoint(x: xOffset, y: yOffset))
                 transform.autoreverses = true
                 self.layer.add(transform, forKey: nil)
             }
@@ -556,11 +585,7 @@ class FlashCardView: UIView, CAAnimationDelegate, UIGestureRecognizerDelegate{
         
     }
     
-    func getDefaultTransfrom() -> CATransform3D{
-        var transform = CATransform3DIdentity
-        transform.m34 = -1/700
-        return transform
-    }
+
     
     
     private func saveTransform(){
@@ -589,23 +614,18 @@ class FlashCardView: UIView, CAAnimationDelegate, UIGestureRecognizerDelegate{
     
     
     func returnCard(){
-        
-        let animationTime = 0.2
-        
-        let currentTransform = self.layer.transform
 
-        self.layer.transform = self.initialTransform!
+        let transform = self.layer.transform
+        self.layer.transform = .defaultTransform
         
-        let transform = CABasicAnimation(keyPath: "transform")
-        transform.fromValue = currentTransform
-        
-        transform.duration = animationTime
-        self.layer.add(transform, forKey: "transform")
-        
-        UIView.animate(withDuration: animationTime) {
+        let transformAnimation = CABasicAnimation(keyPath: "transform")
+         transformAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeOut)
+        transformAnimation.fromValue = transform
+        transformAnimation.duration = 0.3
+        self.layer.add(transformAnimation, forKey: nil)
+        UIView.animate(withDuration: 0.3) {
             self.center = self.initialCenter
         }
-
     }
      
     
