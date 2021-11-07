@@ -16,6 +16,8 @@ class FlashCardView: UIView, CAAnimationDelegate, UIGestureRecognizerDelegate{
     
     var frontView: CardSideView!
     var backView: CardSideView!
+    var defaultWidth = 270.0
+    var defaultHeight = 150.0
     
     var label:UILabel!
     
@@ -43,7 +45,7 @@ class FlashCardView: UIView, CAAnimationDelegate, UIGestureRecognizerDelegate{
     var displayLink: CADisplayLink?
     
     var holdDragTime = 0.1
-    var isHolded = true
+//    var isHolded = true
     
     
     var viewModel: FlashCardViewModel? {
@@ -69,8 +71,8 @@ class FlashCardView: UIView, CAAnimationDelegate, UIGestureRecognizerDelegate{
         frontView.translatesAutoresizingMaskIntoConstraints = false
         frontView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         frontView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-        frontView.widthAnchor.constraint(equalToConstant: 270).isActive = true
-        frontView.heightAnchor.constraint(equalToConstant: 150).isActive = true
+        frontView.widthAnchor.constraint(equalToConstant: self.defaultWidth).isActive = true
+        frontView.heightAnchor.constraint(equalToConstant: self.defaultHeight).isActive = true
         
         backView = CardSideView()
         backView.isHidden = !isBackside
@@ -80,8 +82,8 @@ class FlashCardView: UIView, CAAnimationDelegate, UIGestureRecognizerDelegate{
         backView.translatesAutoresizingMaskIntoConstraints = false
         backView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         backView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-        backView.widthAnchor.constraint(equalToConstant: 270).isActive = true
-        backView.heightAnchor.constraint(equalToConstant: 150).isActive = true
+        backView.widthAnchor.constraint(equalToConstant: self.defaultWidth).isActive = true
+        backView.heightAnchor.constraint(equalToConstant: self.defaultHeight).isActive = true
         
         var perspective = CATransform3DIdentity
         perspective.m34 = -1.0/700
@@ -197,13 +199,13 @@ class FlashCardView: UIView, CAAnimationDelegate, UIGestureRecognizerDelegate{
     //MARK: - Отвечает за переворот карты
     
     func configTapGestureRecognizer(){
-//        let dragGesture = UIPanGestureRecognizer(target: self, action: #selector(dragCard(_:)))
-//        dragGesture.maximumNumberOfTouches = 1
-//        self.addGestureRecognizer(dragGesture)
+        let dragGesture = UIPanGestureRecognizer(target: self, action: #selector(dragCard(_:)))
+        dragGesture.maximumNumberOfTouches = 1
+        self.addGestureRecognizer(dragGesture)
         
-        let swipGesture = UIPanGestureRecognizer(target: self, action: #selector(swipe(_:)))
-        swipGesture.maximumNumberOfTouches = 1
-        self.addGestureRecognizer(swipGesture)
+//        let swipGesture = UIPanGestureRecognizer(target: self, action: #selector(swipe(_:)))
+//        swipGesture.maximumNumberOfTouches = 1
+//        self.addGestureRecognizer(swipGesture)
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(flipCard))
         self.tapGesture = tapGesture
@@ -229,25 +231,22 @@ class FlashCardView: UIView, CAAnimationDelegate, UIGestureRecognizerDelegate{
             piece.layer.transform.m34 = -1.0/700
             self.initialCenter = piece.center
             self.initialTransform = self.layer.transform
-            let task = DispatchWorkItem {
-                self.isHolded = false
-                sender.setTranslation(CGPoint(x: 0,y: 0), in: piece.superview)
-            }
-            self.task = task
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: task)
+//            let task = DispatchWorkItem {
+//                self.isHolded = false
+//                sender.setTranslation(CGPoint(x: 0,y: 0), in: piece.superview)
+//            }
+//            self.task = task
+//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: task)
             
         }
         if sender.state == .changed {
-            if self.isHolded {
-                
-            } else {
                 guard let initialTransform = self.initialTransform else {return}
                 let newCenter = CGPoint(x: initialCenter.x + translation.x, y: initialCenter.y + translation.y)
                 self.center = newCenter
                 let offset = CGPoint(x: newCenter.x - initialCenter.x, y: newCenter.y - initialCenter.y)
                 
                 piece.layer.transform = rotate(offset)
-            }
+            
                
           
                
@@ -255,48 +254,88 @@ class FlashCardView: UIView, CAAnimationDelegate, UIGestureRecognizerDelegate{
         }
         
         if(sender.state == .ended || sender.state == .cancelled){
+            print(piece.frame.size)
+            guard let initialTransform = initialTransform else {
+                return
+            }
+
 //            guard let beginPoint = lastSwipeBeginPoint else { return }
 //            let endPoint = sender.location(in: piece)
-            self.task?.cancel()
+            let xOffset = abs(translation.x)
+            let yOffset = abs(translation.y)
             
-            if self.isHolded {
-                if self.isBackside {
-                    let animationTime = 0.6
-                    let rotateTime = animationTime / 2 / 2
-                    
-                    let startTime = CACurrentMediaTime()
-                    self.endTime = rotateTime + startTime
-                    
-                    self.displayLink = CADisplayLink(target: self, selector: #selector(changeView))
-                    self.displayLink?.add(to: .current, forMode: .common)
-                    
-                    UIView.animate(withDuration: animationTime/2) {
-                        let multiplier = abs(translation.x) > abs(translation.y) ? abs(piece.bounds.width/translation.x) : abs(piece.bounds.height/translation.y)
-                        guard multiplier > 0 else {return}
-                        piece.transform = CGAffineTransform(translationX: translation.x * multiplier, y: translation.y * multiplier)
-                    } completion: { finished in
-                        UIView.animate(withDuration: animationTime/2) {
-                            piece.transform = CGAffineTransform(translationX: 0, y: 0)
-                        }
-                    }
+            let xDirection:CGFloat = translation.x < 0 ? -1 : 1
+            let yDirection:CGFloat = translation.y < 0 ? -1 : 1
+            
+            if xOffset > self.defaultWidth || yOffset > self.defaultHeight {
                
+               let transform = piece.layer.transform
+               piece.layer.transform = getDefaultTransfrom()
+               
+               let transformAnimation = CABasicAnimation(keyPath: "transform")
+               transformAnimation.fromValue = transform
+               transformAnimation.duration = 0.3
+               piece.layer.add(transformAnimation, forKey: nil)
+               UIView.animate(withDuration: 0.3) {
+                   piece.center = self.initialCenter
+               }
+           
+           } else if (xOffset >= self.defaultWidth/2 && xOffset <= self.defaultWidth)
+                || (yOffset >= defaultHeight/2 && yOffset <= self.defaultHeight) {
+                let angle = atan2(translation.y, translation.x)
+                var point = CGPoint(x: self.defaultWidth, y: self.defaultHeight)
+                if xOffset / defaultWidth > yOffset / defaultHeight {
+                    point.y = self.defaultWidth * (sin(angle) / cos(angle))
                 } else {
-                    UIView.animate(withDuration: 0.3) {
-                        let multiplier = abs(translation.x) > abs(translation.y) ? abs(piece.bounds.width/translation.x) : abs(piece.bounds.height/translation.y)
-                        guard multiplier > 0 else {return}
-                        piece.transform = CGAffineTransform(translationX: translation.x * multiplier, y: translation.y * multiplier)
-                    } completion: { finished in
-                        UIView.animate(withDuration: 0.3) {
-                            piece.transform = CGAffineTransform(translationX: 0, y: 0)
-                        }
-                    }
+                    point.x = self.defaultHeight * (cos(angle) / sin(angle))
                 }
+                print("swipe x = \(point.x*xDirection) y = \(point.y*yDirection)")
+                returnCard()
                 
             } else {
-                    returnCard()
+                print("return back")
+                returnCard()
             }
+//            self.task?.cancel()
+            
+//            if self.isHolded {
+//                if self.isBackside {
+//                    let animationTime = 0.6
+//                    let rotateTime = animationTime / 2 / 2
+//
+//                    let startTime = CACurrentMediaTime()
+//                    self.endTime = rotateTime + startTime
+//
+//                    self.displayLink = CADisplayLink(target: self, selector: #selector(changeView))
+//                    self.displayLink?.add(to: .current, forMode: .common)
+//
+//                    UIView.animate(withDuration: animationTime/2) {
+//                        let multiplier = abs(translation.x) > abs(translation.y) ? abs(piece.bounds.width/translation.x) : abs(piece.bounds.height/translation.y)
+//                        guard multiplier > 0 else {return}
+//                        piece.transform = CGAffineTransform(translationX: translation.x * multiplier, y: translation.y * multiplier)
+//                    } completion: { finished in
+//                        UIView.animate(withDuration: animationTime/2) {
+//                            piece.transform = CGAffineTransform(translationX: 0, y: 0)
+//                        }
+//                    }
+//
+//                } else {
+//                    UIView.animate(withDuration: 0.3) {
+//                        let multiplier = abs(translation.x) > abs(translation.y) ? abs(piece.bounds.width/translation.x) : abs(piece.bounds.height/translation.y)
+//                        guard multiplier > 0 else {return}
+//                        piece.transform = CGAffineTransform(translationX: translation.x * multiplier, y: translation.y * multiplier)
+//                    } completion: { finished in
+//                        UIView.animate(withDuration: 0.3) {
+//                            piece.transform = CGAffineTransform(translationX: 0, y: 0)
+//                        }
+//                    }
+//                }
+//
+//            } else {
+//                    returnCard()
+//            }
            
-            self.isHolded = true
+//            self.isHolded = true
             
             //            flipCard()
             //            var defaultTransform = CATransform3DIdentity
@@ -330,6 +369,7 @@ class FlashCardView: UIView, CAAnimationDelegate, UIGestureRecognizerDelegate{
         let xP = CGPoint(x: distance, y: offset.y)
         let xAngle = atan2(xP.y, xP.x)
         
+        
         // Calculate the y angle to the point "infront" of us
         let yP = CGPoint(x: distance, y: offset.x)
         let yAngle = atan2(yP.y, yP.x)
@@ -358,15 +398,18 @@ class FlashCardView: UIView, CAAnimationDelegate, UIGestureRecognizerDelegate{
             piece.layer.transform.m34 = -1.0/700
             self.initialCenter = piece.center
             self.initialTransform = self.layer.transform
-//            let task = DispatchWorkItem {
-//                self.isSwipeMode = false
-//                sender.setTranslation(CGPoint(x: 0,y: 0), in: piece.superview)
-//            }
-//            self.task = task
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: task)
+            let task = DispatchWorkItem {
+                self.isSwipeMode = false
+                sender.setTranslation(CGPoint(x: 0,y: 0), in: piece.superview)
+            }
+            self.task = task
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: task)
         }
         
         if(sender.state == .ended || sender.state == .cancelled){
+            
+         
+            
             var xOffset = 0.0
             var yOffset = 0.0
             
@@ -429,9 +472,9 @@ class FlashCardView: UIView, CAAnimationDelegate, UIGestureRecognizerDelegate{
             position.duration = 0.3
             self.layer.add(position, forKey: nil)
             }
-        
+//          self.task?.cancel()
        
-//            self.task?.cancel()
+       
             /*
             if self.isBackside {
                 let animationTime = 0.6
