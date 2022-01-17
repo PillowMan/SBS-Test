@@ -299,7 +299,18 @@ class FlashCardView: UIView, CAAnimationDelegate, UIGestureRecognizerDelegate{
             
                 
             } else {
-                self.returnCard()
+                print("return card")
+                let transform = self.layer.transform
+                self.layer.transform = self.initialTransform!
+                
+                let transformAnimation = CABasicAnimation(keyPath: "transform")
+                 transformAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeOut)
+                transformAnimation.fromValue = transform
+                transformAnimation.duration = 0.3
+                self.layer.add(transformAnimation, forKey: nil)
+                UIView.animate(withDuration: 0.3) {
+                    self.center = self.initialCenter
+                }
             }
             
 //            self.task?.cancel()
@@ -371,6 +382,7 @@ class FlashCardView: UIView, CAAnimationDelegate, UIGestureRecognizerDelegate{
     //MARK: - Rotate transform
     private func rotateTo(_ offset: CGPoint) -> CATransform3D{
         guard let initialTransform = self.initialTransform else {return .defaultTransform}
+        print("rotate")
         let distance: CGFloat = 170
         
         let xP = CGPoint(x: distance, y: offset.y)
@@ -392,7 +404,7 @@ class FlashCardView: UIView, CAAnimationDelegate, UIGestureRecognizerDelegate{
     
     //MARK: - Move with animation
     @objc func rotateTo(_ offset: CGPoint, withDuration: CGFloat, completion: (() -> Void)? = nil){
-        
+        print("animation rotate")
         // transform
         let primaryTransform = self.layer.transform
         let transform = self.rotateTo(offset)
@@ -415,6 +427,7 @@ class FlashCardView: UIView, CAAnimationDelegate, UIGestureRecognizerDelegate{
         
     @objc func swipe(_ sender: UIPanGestureRecognizer) {
 //        guard self.isSwipeMode else {return}
+        print("swipe")
         guard let piece = sender.view else {return}
         let translation = sender.translation(in: piece.superview)
         
@@ -614,7 +627,7 @@ class FlashCardView: UIView, CAAnimationDelegate, UIGestureRecognizerDelegate{
     
     
     func returnCard(){
-
+        print("return card")
         let transform = self.layer.transform
         self.layer.transform = .defaultTransform
         
@@ -697,6 +710,7 @@ class FlashCardView: UIView, CAAnimationDelegate, UIGestureRecognizerDelegate{
     // https://stackoverflow.com/questions/6059054/cabasicanimation-resets-to-initial-value-after-animation-completes
     
     @objc func flipCard(){
+        print("flip card")
         guard !isAnimating else {return}
         let fullTimeAnimation = 0.6
         let halfTimeAnimation = fullTimeAnimation/2
